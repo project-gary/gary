@@ -1,13 +1,13 @@
-package main
+package warm_standby
 
 import (
 	"log"
 	"time"
 
-	"go.etcd.io/etcd/v3/embed"
+	"go.etcd.io/etcd/embed"
 )
 
-func main() {
+func Run() {
 	cfg := embed.NewConfig()
 	cfg.Dir = "default.etcd"
 	e, err := embed.StartEtcd(cfg)
