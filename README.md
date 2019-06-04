@@ -12,3 +12,7 @@ Code Name Gary
 ## Non-goals
  * Service mesh
  * Other things 
+
+
+## POC needs
+ 
