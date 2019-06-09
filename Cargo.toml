@@ -4,4 +4,9 @@ version = "0.1.0"
 authors = ["Marek Counts <mcounts@suse.com>"]
 edition = "2018"
 
+[features]
+vendored-zmq = ['zmq/vendored']
+
 [dependencies]
+zmq = "0.9.1"
+
