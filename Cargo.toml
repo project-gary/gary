@@ -4,9 +4,35 @@ version = "0.1.0"
 authors = ["Marek Counts <mcounts@suse.com>"]
 edition = "2018"
 
+[[bin]]
+name = "test-server"
+path = "src/server.rs"
+
+[[bin]]
+name = "test-client"
+path = "src/client.rs"
+
 [features]
-vendored-zmq = ['zmq/vendored']
+#vendored-zmq = ['zmq/vendored']
 
 [dependencies]
-zmq = "0.9.1"
+#zmq = "0.9.1"
 
+#gRPC
+futures = "0.1"
+bytes = "0.4"
+env_logger = { version = "0.5", default-features = false }
+log = "0.4"
+http = "0.1"
+prost = "0.5"
+tokio = "0.1"
+tower-request-modifier = { git = "https://github.com/tower-rs/tower-http" }
+tower-hyper = "0.1"
+hyper = "0.12"
+tower-grpc = { git = "https://github.com/tower-rs/tower-grpc", branch = "master", features = ["tower-hyper"] }
+tower-service = "0.2"
+tower-util = "0.1"
+
+
+[build-dependencies]
+tower-grpc-build = { git = "https://github.com/tower-rs/tower-grpc", branch = "master", features = ["tower-hyper"] }
