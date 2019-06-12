@@ -14,7 +14,7 @@ Gary is designed from the ground up to be designed as a container orchestrator t
 ## Why Rust
 Container orchestration tools have been dominated by GoLang. Why deviate? well, there are a lot of reasons. You can read a lot of blog posts about this but here is a very short list of some of them.
 * Rust is more expressive
-* Rust is more preferment most of the time.
+* Rust has better performance most of the time.
 * Rust provides safety and security principles that are required for a container orchestration tool
 
 #### Why not C++ or C then?
