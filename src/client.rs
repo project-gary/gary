@@ -21,10 +21,13 @@ pub fn main() {
     }
 
     let now = Instant::now();
-    let _:Vec<i32> = list.par_iter().map( |_| {
-        make_request_to_server();
-        return 1;
-    }).collect();
+    let _: Vec<i32> = list
+        .par_iter()
+        .map(|_| {
+            make_request_to_server();
+            return 1;
+        })
+        .collect();
     /*
     for _ in 1..10000 {
         make_request_to_server();
