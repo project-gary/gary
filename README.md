@@ -15,4 +15,16 @@ Code Name Gary
 
 
 ## POC needs
+ * [ClusterAPI](docs/cluster_api.md) app 
+ * [Node Communication Interface](docs/nci.md)
+ * [Node Communication implementation](docs/nanomsg.md)
+ * [Container Runtime integration](docs/cri.md)
+
+## Architecture
+
+Based off promise Theory. designed to be control-plane-less. All nodes created equal. [info](docs/architecture.md)
+
+## Community
+Play nice with others please. [info](docs/community.md)
+
  
