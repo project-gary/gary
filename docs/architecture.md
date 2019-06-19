@@ -16,6 +16,7 @@ Container orchestration tools have been dominated by GoLang. Why deviate? well, 
 * Rust is more expressive
 * Rust has better performance most of the time.
 * Rust provides safety and security principles that are required for a container orchestration tool
+* I did not want to fall into using something because it existed. At the start I was using crap because it was easy and already created. In the end I would have looked 90% like kubernetes.
 
 #### Why not C++ or C then?
 Being an open source project we wanted a language that was easier to get into. C++ and C does not offer the memory security and safety that we desired. I love C++, probably more then most.
