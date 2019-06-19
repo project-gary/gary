@@ -8,3 +8,8 @@ edition = "2018"
 nng-sys = { version = "1.1.1-rc.1" }
 nng = { version = "0.5.0-rc.3" }
 
+[features]
+default = ["build-nng"]
+build-nng = ["nng-sys/build-nng"]
+ffi-module = []
+

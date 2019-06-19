@@ -3,6 +3,8 @@
 # code-name-gary
 Code Name Gary
 
+![](docs/icon.png)
+
 ## Goals
  * Create a container orchestrator
  * control-plane vs worker node == no diferance for install/user.
