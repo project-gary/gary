@@ -1,0 +1,1 @@
+{"rustc":3433446036604226809,"features":"[\"default\", \"vendored\", \"zmq-sys\", \"zmq_has\"]","target":10429514197457385088,"profile":9935990280773120926,"path":10976887561407446799,"deps":[],"local":[{"Precalculated":"0.9.1"}],"rustflags":[],"edition":"Edition2018"}

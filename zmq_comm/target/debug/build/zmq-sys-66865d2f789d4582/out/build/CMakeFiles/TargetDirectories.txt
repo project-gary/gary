@@ -1,0 +1,11 @@
+/home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/build/CMakeFiles/install.dir
+/home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/build/CMakeFiles/list_install_components.dir
+/home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/build/CMakeFiles/rebuild_cache.dir
+/home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/build/CMakeFiles/edit_cache.dir
+/home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/build/CMakeFiles/install/strip.dir
+/home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/build/CMakeFiles/install/local.dir
+/home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/build/CMakeFiles/libzmq-static.dir
+/home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/build/CMakeFiles/objects.dir
+/home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/build/CMakeFiles/clang-format-diff.dir
+/home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/build/CMakeFiles/clang-format.dir
+/home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/build/CMakeFiles/clang-format-check.dir

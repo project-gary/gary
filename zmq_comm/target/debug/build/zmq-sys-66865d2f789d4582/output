@@ -1,0 +1,49 @@
+cargo:rerun-if-changed=build.rs
+cargo:rerun-if-env-changed=PROFILE
+running: "cmake" "/home/marek/.cargo/registry/src/github.com-1ecc6299db9ec823/zeromq-src-0.1.6+4.3.1/vendor" "-DCMAKE_INSTALL_LIBDIR=lib" "-DCMAKE_C_STANDARD=99" "-DZMQ_BUILD_TESTS=OFF" "-DENABLE_DRAFTS=OFF" "-DCMAKE_BUILD_TYPE=Debug" "-DWITH_PERF_TOOL=OFF" "-DBUILD_SHARED=OFF" "-DBUILD_STATIC=ON" "-DCMAKE_INSTALL_PREFIX=/home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out" "-DCMAKE_C_FLAGS= -ffunction-sections -fdata-sections -fPIC -m64" "-DCMAKE_C_COMPILER=/usr/bin/cc" "-DCMAKE_CXX_FLAGS= -ffunction-sections -fdata-sections -fPIC -m64" "-DCMAKE_CXX_COMPILER=/usr/bin/c++"
+-- Using tweetnacl for CURVE security
+-- Using polling method in I/O threads: epoll
+-- Using polling method in zmq_poll(er)_* API: poll
+-- Detected ZMQ Version - 4.3.1
+-- Checking whether EFD_CLOEXEC is supported
+-- Checking whether noexcept is supported
+-- Checking whether SOCK_CLOEXEC is supported
+-- Checking whether O_CLOEXEC is supported
+-- Checking whether SO_BINDTODEVICE is supported
+-- Checking whether SO_KEEPALIVE is supported
+-- Checking whether TCP_KEEPCNT is supported
+-- Checking whether TCP_KEEPIDLE is supported
+-- Checking whether TCP_KEEPINTVL is supported
+-- Checking whether TCP_KEEPALIVE is supported
+-- Checking whether TIPC is supported
+-- Checking pthread_setname signature
+-- Checking pthread_setaffinity signature
+-- Checking whether getrandom is supported
+-- Could NOT find AsciiDoc (missing: ASCIIDOC_EXECUTABLE) 
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/build
+running: "cmake" "--build" "." "--target" "install" "--config" "Debug" "--"
+[ 98%] Built target objects
+[100%] Built target libzmq-static
+Install the project...
+-- Install configuration: "Debug"
+-- Up-to-date: /home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/lib/pkgconfig/libzmq.pc
+-- Up-to-date: /home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/lib/libzmq.a
+-- Up-to-date: /home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/include/zmq.h
+-- Up-to-date: /home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/include/zmq_utils.h
+-- Up-to-date: /home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/share/zmq/AUTHORS.txt
+-- Up-to-date: /home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/share/zmq/COPYING.txt
+-- Up-to-date: /home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/share/zmq/COPYING.LESSER.txt
+-- Up-to-date: /home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/share/zmq/NEWS.txt
+-- Up-to-date: /home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/share/cmake/ZeroMQ/ZeroMQTargets.cmake
+-- Installing: /home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/share/cmake/ZeroMQ/ZeroMQTargets-debug.cmake
+-- Up-to-date: /home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/share/cmake/ZeroMQ/ZeroMQConfig.cmake
+-- Up-to-date: /home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/share/cmake/ZeroMQ/ZeroMQConfigVersion.cmake
+cargo:root=/home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out
+cargo:rustc-link-search=native=/home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/lib
+cargo:rustc-link-lib=static=zmq
+cargo:rustc-link-lib=dylib=stdc++
+cargo:include=/home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/include
+cargo:lib=/home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/lib
+cargo:out=/home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out

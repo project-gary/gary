@@ -1,0 +1,1 @@
+{"rustc":3433446036604226809,"features":"[\"vendored\", \"zeromq-src\"]","target":1549943918372116673,"profile":9935990280773120926,"path":15921222003639197549,"deps":[["metadeps v1.1.2","metadeps",6724939895131843895],["zeromq-src v0.1.6+4.3.1","zeromq_src",1493701639012085964]],"local":[{"Precalculated":"0.9.1"}],"rustflags":[],"edition":"Edition2015"}

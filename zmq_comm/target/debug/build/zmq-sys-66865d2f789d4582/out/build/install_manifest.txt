@@ -1,0 +1,12 @@
+/home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/lib/pkgconfig/libzmq.pc
+/home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/lib/libzmq.a
+/home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/include/zmq.h
+/home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/include/zmq_utils.h
+/home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/share/zmq/AUTHORS.txt
+/home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/share/zmq/COPYING.txt
+/home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/share/zmq/COPYING.LESSER.txt
+/home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/share/zmq/NEWS.txt
+/home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/share/cmake/ZeroMQ/ZeroMQTargets.cmake
+/home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/share/cmake/ZeroMQ/ZeroMQTargets-debug.cmake
+/home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/share/cmake/ZeroMQ/ZeroMQConfig.cmake
+/home/marek/code/gary/zmq_comm/target/debug/build/zmq-sys-66865d2f789d4582/out/share/cmake/ZeroMQ/ZeroMQConfigVersion.cmake
