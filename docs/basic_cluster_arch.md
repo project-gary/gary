@@ -9,5 +9,5 @@ Cluster membership and failed node detection will both be managed by a custom go
 Each deployment will have a monitor group elected to ensure a healthy deployment
 
 Rough diagram:
-![](docs/cluster_membership_basics_gossip.png)
+![](cluster_membership_basics_gossip.png)
 
