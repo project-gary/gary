@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct JoinCluster {
     pub machine_info: MachineInfo,
 }
@@ -29,49 +29,52 @@ spec:
         ports:
         - containerPort: 80
  * */
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct Deployment {
+    #[serde(alias = "apiVersion")]
     pub version: String,
     pub kind: String,
     pub metadata: MetaData,
     pub spec: DeploymentSpec,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct DeploymentSpec {
     pub replicas: i32,
     pub template: DeploymentTemplate,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct DeploymentTemplate {
     pub metadata: MetaData,
+    pub spec: Spec,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct MetaData {
-    pub name: String,
+    pub name: Option<String>,
     pub labels: HashMap<String, String>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct Spec {
-    pub containers: Vec<Containers>,
+    pub containers: Vec<Container>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Containers {
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+pub struct Container {
     pub name: String,
     pub image: String,
-    pub ports: Ports,
+    pub ports: Vec<Ports>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct Ports {
-    pub container_ports: String,
+    #[serde(alias = "containerPort")]
+    pub container_port: i32,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct MachineInfo {
     pub fqdn: String,
     pub tags: Vec<String>,
