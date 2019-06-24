@@ -1,0 +1,15 @@
+[package]
+name = "gary-zmq"
+version = "0.1.0"
+authors = ["Marek Counts <mcounts@suse.com>"]
+edition = "2018"
+
+[[bin]]
+name = "example-async"
+path = "examples/async.rs"
+
+[dependencies]
+zmq = "0.9"
+
+[features]
+vendored-zmq = ['zmq/vendored']

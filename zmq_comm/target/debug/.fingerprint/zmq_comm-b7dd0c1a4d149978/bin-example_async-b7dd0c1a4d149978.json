@@ -1,1 +1,0 @@
-{"rustc":3433446036604226809,"features":"[\"vendored-zmq\", \"zmq\"]","target":869662901483372213,"profile":14996655781355331481,"path":3630752787960221886,"deps":[["zmq v0.9.1","zmq",2599622086522641829]],"local":[{"MtimeBased":[[1561062946,550492350],".fingerprint/zmq_comm-b7dd0c1a4d149978/dep-bin-example_async-b7dd0c1a4d149978"]}],"rustflags":[],"edition":"Edition2018"}

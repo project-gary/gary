@@ -1,1 +1,0 @@
-{"rustc":3433446036604226809,"features":"","target":0,"profile":0,"path":0,"deps":[],"local":[{"MtimeBased":[[1561062945,622481260],"build/zmq-sys-66865d2f789d4582/output"]},{"EnvBased":["PROFILE",null]}],"rustflags":[],"edition":"Edition2015"}
