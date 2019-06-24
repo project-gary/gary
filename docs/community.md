@@ -1,4 +1,4 @@
-#Community
+# Community
 
 This project's goal is to help drive innovation in the container orchestration space. If you would like to be apart of that, Please feel free to help out!
 
