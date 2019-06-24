@@ -1,4 +1,5 @@
+
+mod cli;
 fn main() {
-    println!("Hello, world!");
-    println!("me");
+    cli::cli();
 }
