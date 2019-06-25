@@ -1,6 +1,9 @@
-extern crate clap;
+use std::thread;
+use std::sync::mpsc::{Sender, Receiver};
+use std::sync::mpsc;
 use clap::{Arg, App};
-extern crate daemonize;
+use crate::deployment_management;
+use crate::cluster_management;
 
 use daemonize::{Daemonize};
 
@@ -36,14 +39,29 @@ pub fn cli() {
                                         .group("daemon");
         match daemonize.start() {
             Ok(_) => run(),
-            Err(e) => error!("{}", e),
-        }
+            Err(e) => println!("Should log failure to become daemon. error: {}", e),
+        };
     } else {
-        println!("running in foreground");
         run();
     }
 }
 
 fn run() {
+
+    //create thread channels
+    let (tx_cm, rx_cm): (Sender<i32>, Receiver<i32>) = mpsc::channel();
+    let (tx_dm, rx_dm): (Sender<i32>, Receiver<i32>) = mpsc::channel();
+
     println!("Starting server");
+
+    //spawn a new thread for cluster management
+    thread::spawn(move || {
+        println!("joining cluster");
+        cluster_management::join_cluster(tx_cm,rx_dm);
+    });
+
+    //run deployment management on this thread
+    println!("starting deployment management");
+    deployment_management::manage_deployments(tx_dm,rx_cm);
+
 }
