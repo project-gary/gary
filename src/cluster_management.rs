@@ -9,15 +9,25 @@ use serde_derive::{Deserialize, Serialize};
 use std::time::{Duration, Instant};
 
 
-pub fn join_cluster(sender: Sender<i32>, receiver: Receiver<i32>) {
-    loop {
-        match receiver.recv() {
-            Ok(i) => println!("got int: {}", i),
-            Err(_) => println!("channel closed"),
-        }
-    }
+pub fn join_cluster(sender: Sender<&str>, receiver: Receiver<&str>, node_id: &str, node_hostname: &str) {
+    // loop {
+    //     match receiver.recv() {
+    //         Ok(i) => println!("got int: {}", i),
+    //         Err(_) => {
+    //             println!("channel closed");
+    //             break;
+    //         }
+    //     }
+    // }
+
+    println!("Initial representation of a running Node");
+    let myself = Node::new(node_id, node_hostname);
+    myself.run();
 }
 
+pub fn print_to_chan(sender: Sender<&str>, val: &str) {
+    sender.send("hello").unwrap();
+}
 
 // Begin data dump by dorf:
 
@@ -50,11 +60,7 @@ impl Node {
         let allowed_duration = Duration::new(1, 0);
         let mut start_time = Instant::now();
         loop {
-            if responder
-                .poll(zmq::POLLIN, 10)
-                .expect("client failed polling")
-                > 0
-            {
+            if responder.poll(zmq::POLLIN, 10).expect("client failed polling") > 0 {
                 let message = responder.recv_msg(0).unwrap();
                 // ToDo: Incoming message should allow for different types of message
                 // like "update", "join", "ping", "health", etc
@@ -105,10 +111,3 @@ struct Message {
     msg_type: MessageType,
     payload: Vec<String>, // Maybe change to something more JSON friendly
 }
-
-// fn main() {
-//     println!("Initial representation of a running Node");
-//     let myself = Node::new("myid", "myhostname");
-//     myself.run();
-//     // println!("{}", myself.id)
-// }
