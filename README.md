@@ -7,7 +7,7 @@ Code Name Gary
 
 ## Goals
  * Create a container orchestrator
- * control-plane vs worker node == no diferance for install/user.
+ * control-plane vs worker node == no difference for install/user.
  * single binary install
  * based on promise theory
  * HA on as few as 3 nodes and scale to millions of nodes (does not need tested at millions. but thousands would be cool)
