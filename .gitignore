@@ -13,7 +13,7 @@
 
 # IDE files
 .idea
-
+.vscode
 
 #Added by cargo
 #

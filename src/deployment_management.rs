@@ -1,10 +1,10 @@
+use std::sync::mpsc::{Receiver, Sender};
 use std::thread;
 use std::time::Duration;
-use std::sync::mpsc::{Sender, Receiver};
 
-pub fn manage_deployments(sender: Sender<i32>, receiver: Receiver<i32>) {
+pub fn manage_deployments(sender: Sender<&str>, receiver: Receiver<&str>) {
     thread::sleep(Duration::from_secs(1));
-    sender.send(32).unwrap();
+    sender.send("35").unwrap();
     println!("boom");
     thread::sleep(Duration::from_secs(1));
 }
