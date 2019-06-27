@@ -8,7 +8,7 @@ pub trait ClusterCommunicator {
     /*
      * Cluster management
      * */
-     fn send_message(&self, msg: &Message) -> bool;
+    fn send_message(&self, msg: &Message) -> bool;
 }
 
 /* not sure if I like these could be part of the same trait*/
@@ -20,7 +20,7 @@ pub trait ClusterCommunicationReceiver {
 /*
 * Node to node private deployment communication00
 * */
-pub trait DeploymentCommunicator{
+pub trait DeploymentCommunicator {
     /*
      * Deployment management
      * */
@@ -28,9 +28,7 @@ pub trait DeploymentCommunicator{
 }
 
 /* not sure if I like these */
-pub trait DeploymentCommunicationReceiver {
-
-}
+pub trait DeploymentCommunicationReceiver {}
 
 /*
 * public api, aka, backend of cli tool and maybe web ui

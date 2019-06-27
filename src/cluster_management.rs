@@ -1,3 +1,4 @@
+use gary_zmq::cluster_communication::ZmqNode;
 use std::collections::HashMap;
 use std::sync::mpsc::{Receiver, Sender};
 
@@ -19,7 +20,6 @@ pub fn join_cluster(
     // }
 
     println!("Initial representation of a running Node");
-    //TODO: Need to inject a `ZmqNode` to use here
-    //let mut myself = Node::new(node_id, node_hostname, node_listener_port, sender);  //, sender.to_owned());
-    //myself.run();
+    let mut myself = ZmqNode::new(node_id, node_hostname, node_listener_port, sender); //, sender.to_owned());
+    myself.run();
 }

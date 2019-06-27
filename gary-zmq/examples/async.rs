@@ -1,4 +1,3 @@
-
 #![crate_name = "example_async"]
 
 use std::env;
@@ -137,12 +136,12 @@ fn main() {
     } else {
         args
     };
-/*
-    let args = vec!["".to_string(), "10000000".to_string(), "1".to_string()];
+    /*
+        let args = vec!["".to_string(), "10000000".to_string(), "1".to_string()];
 
-    let size = args[1].parse().unwrap();
-    let workers = args[2].parse().unwrap();
-*/
+        let size = args[1].parse().unwrap();
+        let workers = args[2].parse().unwrap();
+    */
     let mut ctx = zmq::Context::new();
 
     run(&mut ctx, 1000000, 1);
