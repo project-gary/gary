@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/Klaven/gary.svg?branch=master)](https://travis-ci.org/Klaven/gary)
+[![Build Status](https://travis-ci.org/project-gary/gary.svg?branch=master)](https://travis-ci.org/project-gary/gary)
 
 # code-name-gary
 Code Name Gary
