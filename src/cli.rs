@@ -60,6 +60,7 @@ fn run() {
     // cluster consts - need to be CLI args
     const NODEID: &str = "node8675309";
     const NODEHOSTNAME: &str = "nodehostname8675309";
+    const NODELISTENERPORT: u16 = 5555;
 
 
     //create thread channels
@@ -73,7 +74,7 @@ fn run() {
     thread::spawn(move || {
         println!("joining cluster");
         // cluster_management::join_cluster(tx_cm, rx_dm);  // Communicates with Deployment Manager
-        cluster_management::join_cluster(tx_mt, rx_dm, NODEID, NODEHOSTNAME); // Communicates with Main Thread
+        cluster_management::join_cluster(tx_mt, rx_dm, NODEID, NODEHOSTNAME, NODELISTENERPORT); // Communicates with Main Thread
     });
 
     // run deployment management on this thread
