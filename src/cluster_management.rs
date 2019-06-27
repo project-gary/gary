@@ -28,6 +28,25 @@ pub fn join_cluster(sender: Sender<&'static str>, receiver: Receiver<&str>, node
 
 // Begin data dump by dorf:
 
+#[repr(u8)]
+#[derive(Serialize, Deserialize, Debug)]
+enum MessageType {
+    Join = 0,
+    Remove,
+    Gossip,
+    Sync,
+    Ping,
+    Health,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct Message {
+    target: String,
+    sender: String,
+    msg_type: MessageType,
+    payload: Vec<String>, // Maybe change to something more JSON friendly
+}
+
 // #[derive(Serialize, Deserialize, Debug)]  // Can't serialize 'sender'
 struct Node {
     id: String,                                 // Unique ID
@@ -65,11 +84,14 @@ impl Node {
         self.adjacent.insert("somenode2".to_string(), Utc::now()); // testing - remove later
         self.adjacent.insert("somenode3".to_string(), Utc::now()); // testing - remove later
         self.adjacent.insert("somenode4".to_string(), Utc::now()); // testing - remove later
+        
         // Server setup
-        let context = zmq::Context::new();
-        let responder = context.socket(zmq::REP).unwrap();
+        // let context = zmq::Context::new();
+        // let responder = context.socket(zmq::REP).unwrap();
+        let responder = self.node_comm_ctx.socket(zmq::REP).unwrap();
         assert!(responder.bind("tcp://*:5555").is_ok());
-        let requester = context.socket(zmq::REQ).unwrap();
+
+        // let requester = context.socket(zmq::REQ).unwrap();
         // assert!(requester.connect("tcp://localhost:5555").is_ok());
 
         let allowed_duration = Duration::new(1, 0);
@@ -79,12 +101,14 @@ impl Node {
                 let message = responder.recv_msg(0).unwrap();
                 // ToDo: Incoming message should allow for different types of message
                 // like "update", "join", "ping", "health", etc
-                // let deserialized: HashMap<String, String> =
-                //     serde_json::from_str(&message.as_str().unwrap()).unwrap();
-                let deserialized: HashMap<String, String> =
-                    serde_cbor::from_slice(&message).unwrap();
-                println!("Received {:?}", deserialized);
-                responder.send("", 0).unwrap();
+
+                // deserialization examples:
+                // let deserialized: HashMap<String, String> = serde_json::from_str(&message.as_str().unwrap()).unwrap();
+                // let deserialized: HashMap<String, String> = serde_cbor::from_slice(&message).unwrap();
+                
+                let deserialized: Message =serde_cbor::from_slice(&message).unwrap();
+                responder.send("ACK", 0).unwrap();
+                self.handle_message(&deserialized);
             }
             // Check if heartbeat interval elapsed, send heartbeat/update message to peers
             if start_time.elapsed() > allowed_duration {
@@ -110,8 +134,6 @@ impl Node {
             while (adj_node_sample.len() as u8) < self.gossip_fanout {
                 let rand_index = rng.gen_range(0, adjacent_keys_len);
                 if !adj_node_sample.contains(&adjacent_keys[rand_index]) {
-                    // let key = &adjacent_keys[rand_index];
-                    // let val = self.adjacent.get(key).unwrap();
                     adj_node_sample.push(adjacent_keys[rand_index].to_string());
                 }
             }
@@ -119,15 +141,48 @@ impl Node {
         return adj_node_sample;
     }
 
+    fn send_message(&self, msg: &Message) -> bool {
+        let serialized_msg = serde_cbor::to_vec(msg).unwrap();
+        let requester = self.node_comm_ctx.socket(zmq::REQ).unwrap();
+        assert!(requester.connect("tcp://localhost:5555").is_ok());
+        requester.send(&serialized_msg, 0).unwrap();
+        let ack = requester.recv_string(0).unwrap().unwrap();  // ToDo:  So many unwraps... needs fixin'
+        if ack.len() > 0 {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    fn handle_message(&self, msg: &Message) {
+        // match &msg.msg_type {
+        //     MessageType::Gossip => println!("Received payload {:?}", &msg.payload),
+        // }
+        // if &msg.msg_type == MessageType::Gossip {
+        //     let payload = &msg.payload;
+        //     println!("Received payload {:?}", payload);
+        // }
+        println!("Received payload {:?}", &msg.payload);
+    }
+
     fn update_neighbors(&self) {
         if self.adjacent.len() > 0 {
             let nghbr_sample = self.get_nghbr_sample();
+            let adjacent_vec = self.adjacent.keys().map(|x| x.clone()).collect::<Vec<String>>();
             println!("Sent update for {:?}", nghbr_sample);
-            // for nghbr in nghbr_sample {
-            //     // println!("Sent update for {}", nghbr);
-            //     // Get hostname for nghbr
-            //     // self.send_update(nghbr.hostname, nghbr_sample);
-            // }
+            for nghbr in nghbr_sample {
+                let msg = Message {
+                    target: nghbr,
+                    sender: self.id.clone(),         // ToDo:  Fix to use a ref instead
+                    msg_type: MessageType::Gossip,
+                    payload: adjacent_vec.clone(),   // ToDo:  Fix to use a ref instead - https://matklad.github.io/2018/05/04/encapsulating-lifetime-of-the-field.html
+                };
+
+                
+                // println!("Sent update for {}", nghbr);
+                // Get hostname for nghbr
+                // self.send_update(nghbr.hostname, nghbr_sample);
+            }
         }
 
         // select adjacent nodes - get_adj_sample()
@@ -140,25 +195,4 @@ impl Node {
     // fn get_adj_sample()
     // fn join()
     // fn add_node()
-    // fn send_message()
-}
-
-
-#[repr(u8)]
-#[derive(Serialize, Deserialize, Debug)]
-enum MessageType {
-    Join = 0,
-    Remove,
-    Gossip,
-    Sync,
-    Ping,
-    Health,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-struct Message {
-    target: String,
-    sender: String,
-    msg_type: MessageType,
-    payload: Vec<String>, // Maybe change to something more JSON friendly
 }
