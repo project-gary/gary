@@ -84,3 +84,4 @@ pub struct MachineInfo {
     pub used_cpu: i64,
     pub disk_avlible: i64,
 }
+

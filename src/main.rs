@@ -1,6 +1,6 @@
-extern crate log;
-extern crate daemonize;
 extern crate clap;
+extern crate daemonize;
+extern crate log;
 
 mod cli;
 mod cluster_management;
