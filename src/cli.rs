@@ -1,4 +1,3 @@
-
 use crate::cluster_management;
 use crate::deployment_management;
 use clap::{App, Arg};
@@ -6,7 +5,6 @@ use daemonize::Daemonize;
 // use std::sync::mpsc::{Receiver, Sender};
 use std::sync::mpsc;
 use std::thread;
-
 
 pub fn cli() {
     let matches = App::new("Gary")
@@ -37,7 +35,6 @@ pub fn cli() {
         .get_matches();
 
     if matches.is_present("daemon") {
-
         println!("Running as daemon");
         let daemonize = Daemonize::new()
             .pid_file("/var/run/gary.pid")
@@ -62,13 +59,11 @@ fn run() {
     const NODEHOSTNAME: &str = "nodehostname8675309";
     const NODELISTENERPORT: u16 = 5555;
 
-
     //create thread channels
     let (tx_cm, rx_cm): (mpsc::Sender<&str>, mpsc::Receiver<&str>) = mpsc::channel();
     let (tx_dm, rx_dm): (mpsc::Sender<&str>, mpsc::Receiver<&str>) = mpsc::channel();
     // Channel to main thread for debug
     let (tx_mt, rx_mt): (mpsc::Sender<&str>, mpsc::Receiver<&str>) = mpsc::channel();
-
 
     //spawn a new thread for cluster management
     thread::spawn(move || {
@@ -91,5 +86,4 @@ fn run() {
             }
         }
     }
-
 }

@@ -1,4 +1,5 @@
 use super::data::*;
+use super::network::*;
 
 /*
 * Node to node private cluster communication
@@ -7,10 +8,7 @@ pub trait ClusterCommunicator {
     /*
      * Cluster management
      * */
-    fn join_cluster(s: &Self, info: MachineInfo);
-    fn gossip(&self, gossip: Vec<MachineInfo>);
-    fn heartbeat(&self, peer: &str);
-    fn sync_request(&self, peer: &str);
+    fn send_message(&self, msg: &Message) -> bool;
 }
 
 /* not sure if I like these could be part of the same trait*/
@@ -22,7 +20,7 @@ pub trait ClusterCommunicationReceiver {
 /*
 * Node to node private deployment communication00
 * */
-pub trait DeploymentCommunicator{
+pub trait DeploymentCommunicator {
     /*
      * Deployment management
      * */
@@ -30,9 +28,7 @@ pub trait DeploymentCommunicator{
 }
 
 /* not sure if I like these */
-pub trait DeploymentCommunicationReceiver {
-
-}
+pub trait DeploymentCommunicationReceiver {}
 
 /*
 * public api, aka, backend of cli tool and maybe web ui
