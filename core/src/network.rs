@@ -4,7 +4,7 @@ use serde_cbor;
 #[repr(u8)]
 #[derive(Serialize, Deserialize, Debug)]
 pub enum MessageType {
-    Join = 0,
+    Join,
     Remove,
     Gossip,
     Sync,

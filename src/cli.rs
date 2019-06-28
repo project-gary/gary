@@ -55,9 +55,8 @@ fn run() {
     println!("Starting server");
 
     // cluster consts - need to be CLI args
-    const NODEID: &str = "node8675309";
     const NODEHOSTNAME: &str = "nodehostname8675309";
-    const NODELISTENERPORT: u16 = 5555;
+    // const NODELISTENERPORT: u16 = 5555;
 
     //create thread channels
     let (tx_cm, rx_cm): (mpsc::Sender<&str>, mpsc::Receiver<&str>) = mpsc::channel();
@@ -67,9 +66,16 @@ fn run() {
 
     //spawn a new thread for cluster management
     thread::spawn(move || {
-        println!("joining cluster");
-        // cluster_management::join_cluster(tx_cm, rx_dm);  // Communicates with Deployment Manager
-        cluster_management::join_cluster(tx_mt, rx_dm, NODEID, NODEHOSTNAME, NODELISTENERPORT); // Communicates with Main Thread
+        println!("starting first node in the cluster");
+        // cluster_management::start_node(tx_cm, rx_dm);  // Communicates with Deployment Manager
+        let init_neighbors: Vec<String> = vec![
+            // TODO: testing - remove later
+            "somenode1".to_string(),
+            "somenode2".to_string(),
+            "somenode3".to_string(),
+            "somenode4".to_string(),
+        ];
+        cluster_management::start_node(tx_mt, rx_dm, NODEHOSTNAME, init_neighbors); // Communicates with Main Thread
     });
 
     // run deployment management on this thread

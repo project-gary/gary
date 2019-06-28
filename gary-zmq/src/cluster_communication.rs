@@ -13,15 +13,13 @@ use std::time::{Duration, Instant};
 
 // #[derive(Serialize, Deserialize, Debug)]  // Can't serialize 'sender'
 pub struct ZmqNode {
-    id: String,                                 // Unique ID
-    host: String,                               // IP address or FQDN
-    gossip_fanout: u8,                          // Adjacent nodes updated each gossip cycle
-    node_comm_port: u16,                        // Node communication port
+    host_addr: String, // Unique ID
+    gossip_fanout: u8, // Adjacent nodes updated each gossip cycle
+    // node_comm_port: u16,                        // Node communication port
     node_comm_ctx: zmq::Context, // zmq context - ToDo: make generic for other comm libs
     main_thread_sender: Sender<&'static str>, // Sender to main thread channel
-    known_nodes: HashMap<String, String>, // Format is (id, host)
-    adjacent: HashMap<String, DateTime<Utc>>, // Contains vector of ids to minimize storage
-    delinquent: HashMap<String, DateTime<Utc>>, // Format is (id, time_reported)
+    pub adjacent: HashMap<String, DateTime<Utc>>, // Contains vector of ids to minimize storage
+    delinquent: HashMap<String, DateTime<Utc>>, // Format is (host_addr, time_reported)
 }
 
 impl ClusterCommunicator for ZmqNode {
@@ -41,21 +39,18 @@ impl ClusterCommunicator for ZmqNode {
 
 impl ZmqNode {
     pub fn new(
-        id: &str,
-        host: &str,
-        listener_port: u16,
         mt_sender: Sender<&'static str>,
+        host_addr: &str,
+        // listener_port: u16,
     ) -> ZmqNode {
         ZmqNode {
-            id: id.to_string(),
-            host: host.to_string(),
+            host_addr: host_addr.to_string(),
             gossip_fanout: 3,
-            node_comm_port: listener_port,
+            // node_comm_port: listener_port,
             node_comm_ctx: zmq::Context::new(),
             main_thread_sender: mt_sender,
-            known_nodes: HashMap::new(), //HashMap::<String, String>::new(),
-            adjacent: HashMap::new(),    //HashMap<&str, DateTime<UTC>>,
-            delinquent: HashMap::new(),  //HashMap<&str, DateTime>,
+            adjacent: HashMap::new(),   //HashMap<&str, DateTime<UTC>>,
+            delinquent: HashMap::new(), //HashMap<&str, DateTime>,
         }
     }
 
@@ -64,19 +59,9 @@ impl ZmqNode {
     }
 
     pub fn run(&mut self) {
-        self.adjacent.insert("somenode1".to_string(), Utc::now()); // testing - remove later
-        self.adjacent.insert("somenode2".to_string(), Utc::now()); // testing - remove later
-        self.adjacent.insert("somenode3".to_string(), Utc::now()); // testing - remove later
-        self.adjacent.insert("somenode4".to_string(), Utc::now()); // testing - remove later
-
         // Server setup
-        // let context = zmq::Context::new();
-        // let responder = context.socket(zmq::REP).unwrap();
         let responder = self.node_comm_ctx.socket(zmq::REP).unwrap();
         assert!(responder.bind("tcp://*:5555").is_ok());
-
-        // let requester = context.socket(zmq::REQ).unwrap();
-        // assert!(requester.connect("tcp://localhost:5555").is_ok());
 
         let allowed_duration = Duration::new(1, 0);
         let mut start_time = Instant::now();
@@ -108,11 +93,7 @@ impl ZmqNode {
     }
 
     fn get_nghbr_sample(&self) -> Vec<String> {
-        // println!("Sending update message!");
-        // self.send_to_chan("Sending update message!");
-        // let mut adj_node_sample: HashMap<String, DateTime<Utc>> = HashMap::new();
         let mut adj_node_sample: Vec<String> = Vec::new();
-
         if (self.adjacent.len() as u8) <= self.gossip_fanout {
             // Not sure about the 'as' conversion
             adj_node_sample = self
@@ -137,16 +118,28 @@ impl ZmqNode {
         }
         return adj_node_sample;
     }
+    fn comm_recv_gossip(&mut self, payload: &Vec<String>) {
+        if payload.len() > 0 {
+            for node_addr in payload {
+                if !self.adjacent.contains_key(node_addr){
+                    self.adjacent.insert(node_addr.to_string(), Utc::now());
+                }
+            }
+        }
+    }
 
-    fn handle_message(&self, msg: &Message) {
-        // match &msg.msg_type {
-        //     MessageType::Gossip => println!("Received payload {:?}", &msg.payload),
-        // }
-        // if &msg.msg_type == MessageType::Gossip {
-        //     let payload = &msg.payload;
-        //     println!("Received payload {:?}", payload);
-        // }
-        println!("Received payload {:?}", &msg.payload);
+    fn handle_message(&mut self, msg: &Message) {
+        match &msg.msg_type {
+            MessageType::Join => println!("Message Type: {:?}", &msg.msg_type),
+            MessageType::Remove => println!("Message Type: {:?}", &msg.msg_type),
+            MessageType::Gossip => {
+                println!("Message Type: {:?}", &msg.msg_type);
+                self.comm_recv_gossip(&msg.payload);
+            }
+            MessageType::Sync => println!("Message Type: {:?}", &msg.msg_type),
+            MessageType::Ping => println!("Message Type: {:?}", &msg.msg_type),
+            MessageType::Health => println!("Message Type: {:?}", &msg.msg_type),
+        }
     }
 
     fn update_neighbors(&self) {
@@ -161,11 +154,11 @@ impl ZmqNode {
             for nghbr in nghbr_sample {
                 let msg = Message {
                     target: nghbr,
-                    sender: self.id.clone(), // ToDo:  Fix to use a ref instead
+                    sender: self.host_addr.clone(), // ToDo:  Fix to use a ref instead
                     msg_type: MessageType::Gossip,
                     payload: adjacent_vec.clone(), // ToDo:  Fix to use a ref instead - https://matklad.github.io/2018/05/04/encapsulating-lifetime-of-the-field.html
                 };
-
+                // comm_send_gossip(nghbr, msg);
                 // println!("Sent update for {}", nghbr);
                 // Get hostname for nghbr
                 // self.send_update(nghbr.hostname, nghbr_sample);
@@ -178,8 +171,7 @@ impl ZmqNode {
     }
 
     // TO BE IMPLEMENTED
-    // fn receive_update() - check each nghbr in known nodes and update hostname, generate chrono Datetime and insert with node id into 'adjacent'
-    // fn get_adj_sample()
-    // fn join()
+    // fn comm_send_gossip()
+    // fn join()                // May not be needed - just start a node with known adjacent nodes
     // fn add_node()
 }

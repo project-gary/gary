@@ -1,13 +1,14 @@
 use gary_zmq::cluster_communication::ZmqNode;
-use std::collections::HashMap;
+// use std::collections::HashMap;
+use chrono::Utc;
 use std::sync::mpsc::{Receiver, Sender};
 
-pub fn join_cluster(
+pub fn start_node(
     sender: Sender<&'static str>,
     receiver: Receiver<&str>,
-    node_id: &str,
-    node_hostname: &str,
-    node_listener_port: u16,
+    host_addr: &str,
+    init_neighbors: Vec<String>,
+    // node_listener_port: u16,
 ) {
     // loop {
     //     match receiver.recv() {
@@ -20,6 +21,11 @@ pub fn join_cluster(
     // }
 
     println!("Initial representation of a running Node");
-    let mut myself = ZmqNode::new(node_id, node_hostname, node_listener_port, sender); //, sender.to_owned());
+    let mut myself = ZmqNode::new(sender, host_addr); //, sender.to_owned());
+    if init_neighbors.len() > 0 {
+        for node_addr in init_neighbors {
+            myself.adjacent.insert(node_addr.to_string(), Utc::now());
+        }
+    }
     myself.run();
 }
