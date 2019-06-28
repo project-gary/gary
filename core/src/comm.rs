@@ -35,10 +35,3 @@ pub trait DeploymentCommunicator {
 
 /* not sure if I like these */
 pub trait DeploymentCommunicationReceiver {}
-
-/*
-* public api, aka, backend of cli tool and maybe web ui
-* */
-pub trait ClusterApi {
-    fn my_fn();
-}
