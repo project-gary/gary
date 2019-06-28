@@ -8,7 +8,12 @@ pub trait ClusterCommunicator {
     /*
      * Cluster management
      * */
-    fn send_message(&self, msg: &Message) -> bool;
+    fn send_message(&self, target: &str, msg: &Message) -> bool;
+    fn handle_message(&mut self, msg: &Message);
+    fn get_nghbr_sample(&self) -> Vec<String>;
+    fn comm_recv_gossip(&mut self, payload: &Vec<String>);
+    fn update_neighbors(&mut self);
+    fn delinquent_node_check(&mut self);
 }
 
 /* not sure if I like these could be part of the same trait*/

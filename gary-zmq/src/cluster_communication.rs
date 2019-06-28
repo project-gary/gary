@@ -1,8 +1,7 @@
 use core::comm::ClusterCommunicator;
-use core::network::*;
+use core::network::{Message, MessageType};
 use std::sync::mpsc::{Receiver, Sender};
 
-// #[macro_use]
 use std::collections::HashMap;
 
 use chrono::{DateTime, Utc};
@@ -23,71 +22,49 @@ pub struct ZmqNode {
 }
 
 impl ClusterCommunicator for ZmqNode {
-    fn send_message(&self, msg: &Message) -> bool {
+    fn send_message(&self, target: &str, msg: &Message) -> bool {
+        const TIMEOUTPERIOD: i32 = 1000; // timeout in milliseconds
+        
         let serialized_msg = serde_cbor::to_vec(msg).unwrap();
         let requester = self.node_comm_ctx.socket(zmq::REQ).unwrap();
-        assert!(requester.connect("tcp://localhost:5555").is_ok());
+        requester.set_sndtimeo(TIMEOUTPERIOD).unwrap();
+        requester.set_rcvtimeo(TIMEOUTPERIOD).unwrap();
+        let target_addr = format!("tcp://{}:5555", target);
+        assert!(requester.connect(&target_addr).is_ok());
         requester.send(&serialized_msg, 0).unwrap();
-        let ack = requester.recv_string(0).unwrap().unwrap(); // ToDo:  So many unwraps... needs fixin'
+        let mut ack: String = "".to_string();
+        match requester.recv_string(0) {
+            Ok(v) => ack = v.unwrap(),
+            Err(e) => println!("Error sending message to {}: {:?}", target, e),
+        }
+        assert!(requester.disconnect(&target_addr).is_ok());
         if ack.len() > 0 {
             return true;
         } else {
             return false;
         }
     }
-}
 
-impl ZmqNode {
-    pub fn new(
-        mt_sender: Sender<&'static str>,
-        host_addr: &str,
-        // listener_port: u16,
-    ) -> ZmqNode {
-        ZmqNode {
-            host_addr: host_addr.to_string(),
-            gossip_fanout: 3,
-            // node_comm_port: listener_port,
-            node_comm_ctx: zmq::Context::new(),
-            main_thread_sender: mt_sender,
-            adjacent: HashMap::new(),   //HashMap<&str, DateTime<UTC>>,
-            delinquent: HashMap::new(), //HashMap<&str, DateTime>,
+    fn handle_message(&mut self, msg: &Message) {
+        match &msg.msg_type {
+            MessageType::Join => println!("Message Type: {:?}", &msg.msg_type),
+            MessageType::Remove => println!("Message Type: {:?}", &msg.msg_type),
+            MessageType::Gossip => {
+                println!("Message Type: {:?}", &msg.msg_type);
+                self.comm_recv_gossip(&msg.payload);
+            }
+            MessageType::Sync => println!("Message Type: {:?}", &msg.msg_type),
+            MessageType::Ping => println!("Message Type: {:?}", &msg.msg_type),
+            MessageType::Health => println!("Message Type: {:?}", &msg.msg_type),
         }
     }
 
-    fn send_to_chan(&self, val: &'static str) {
-        self.main_thread_sender.send(val).unwrap();
-    }
-
-    pub fn run(&mut self) {
-        // Server setup
-        let responder = self.node_comm_ctx.socket(zmq::REP).unwrap();
-        assert!(responder.bind("tcp://*:5555").is_ok());
-
-        let allowed_duration = Duration::new(1, 0);
-        let mut start_time = Instant::now();
-        loop {
-            if responder
-                .poll(zmq::POLLIN, 10)
-                .expect("client failed polling")
-                > 0
-            {
-                let message = responder.recv_msg(0).unwrap();
-                // ToDo: Incoming message should allow for different types of message
-                // like "update", "join", "ping", "health", etc
-
-                // deserialization examples:
-                // let deserialized: HashMap<String, String> = serde_json::from_str(&message.as_str().unwrap()).unwrap();
-                // let deserialized: HashMap<String, String> = serde_cbor::from_slice(&message).unwrap();
-
-                let deserialized: Message = serde_cbor::from_slice(&message).unwrap();
-                responder.send("ACK", 0).unwrap();
-                self.handle_message(&deserialized);
-            }
-            // Check if heartbeat interval elapsed, send heartbeat/update message to peers
-            if start_time.elapsed() > allowed_duration {
-                self.update_neighbors();
-                // self.send_to_chan("sdjkkhdsjkfh");
-                start_time = Instant::now();
+    fn comm_recv_gossip(&mut self, payload: &Vec<String>) {
+        if payload.len() > 0 {
+            for node_addr in payload {
+                if !self.adjacent.contains_key(node_addr){
+                    self.adjacent.insert(node_addr.to_string(), Utc::now());
+                }
             }
         }
     }
@@ -118,31 +95,8 @@ impl ZmqNode {
         }
         return adj_node_sample;
     }
-    fn comm_recv_gossip(&mut self, payload: &Vec<String>) {
-        if payload.len() > 0 {
-            for node_addr in payload {
-                if !self.adjacent.contains_key(node_addr){
-                    self.adjacent.insert(node_addr.to_string(), Utc::now());
-                }
-            }
-        }
-    }
 
-    fn handle_message(&mut self, msg: &Message) {
-        match &msg.msg_type {
-            MessageType::Join => println!("Message Type: {:?}", &msg.msg_type),
-            MessageType::Remove => println!("Message Type: {:?}", &msg.msg_type),
-            MessageType::Gossip => {
-                println!("Message Type: {:?}", &msg.msg_type);
-                self.comm_recv_gossip(&msg.payload);
-            }
-            MessageType::Sync => println!("Message Type: {:?}", &msg.msg_type),
-            MessageType::Ping => println!("Message Type: {:?}", &msg.msg_type),
-            MessageType::Health => println!("Message Type: {:?}", &msg.msg_type),
-        }
-    }
-
-    fn update_neighbors(&self) {
+    fn update_neighbors(&mut self) {
         if self.adjacent.len() > 0 {
             let nghbr_sample = self.get_nghbr_sample();
             let adjacent_vec = self
@@ -153,25 +107,104 @@ impl ZmqNode {
             println!("Sent update for {:?}", nghbr_sample);
             for nghbr in nghbr_sample {
                 let msg = Message {
-                    target: nghbr,
-                    sender: self.host_addr.clone(), // ToDo:  Fix to use a ref instead
+                    target: &nghbr,
+                    sender: &self.host_addr,
                     msg_type: MessageType::Gossip,
                     payload: adjacent_vec.clone(), // ToDo:  Fix to use a ref instead - https://matklad.github.io/2018/05/04/encapsulating-lifetime-of-the-field.html
                 };
-                // comm_send_gossip(nghbr, msg);
-                // println!("Sent update for {}", nghbr);
-                // Get hostname for nghbr
-                // self.send_update(nghbr.hostname, nghbr_sample);
+                let result = self.send_message(&nghbr, &msg);
+                // println!("Send result: {}", result);
+                if !result {
+                    
+                    if !self.delinquent.contains_key(&nghbr){
+                        self.delinquent.insert(nghbr.clone(), Utc::now());
+                    }
+                    self.adjacent.remove(&nghbr);
+                }
             }
         }
+    }
 
-        // select adjacent nodes - get_adj_sample()
-        // pack nodes into some data structure
-        // send message containing adjacent nodes with message type
+    fn delinquent_node_check(&mut self) {
+        println!("Checking delinquent nodes again...");
+        // If node responds to heartbeat, move back to adjacent node - implement heartbeat
+        // If node doesn not respond and timestamp does not exceed spec'd duration, continue
+        // If timestamp exceeds some spec'd duration, remove node or add to a deleted_nodes field in Node
+    }
+}
+
+impl ZmqNode {
+    pub fn new(
+        mt_sender: Sender<&'static str>,
+        host_addr: &str,
+        // listener_port: u16,
+    ) -> ZmqNode {
+        ZmqNode {
+            host_addr: host_addr.to_string(),
+            gossip_fanout: 3,
+            // node_comm_port: listener_port,
+            node_comm_ctx: zmq::Context::new(),
+            main_thread_sender: mt_sender,
+            adjacent: HashMap::new(),   //HashMap<&str, DateTime<UTC>>,
+            delinquent: HashMap::new(), //HashMap<&str, DateTime>,
+        }
+    }
+
+    fn send_to_chan(&self, val: &'static str) {
+        self.main_thread_sender.send(val).unwrap();
+    }
+
+    pub fn run(&mut self) {
+        // Server setup
+        const GOSSIPPERIOD: u64 = 2; // seconds
+        const DELCHECKPERIOD: u64 = 10; // seconds
+
+        let responder = self.node_comm_ctx.socket(zmq::REP).unwrap();
+        assert!(responder.bind("tcp://*:5555").is_ok());
+
+        // Gossip
+        let allowed_duration_gossip = Duration::new(GOSSIPPERIOD.into(), 0);
+        let mut gossip_period_start_time = Instant::now();
+
+        // Delinquent node check
+        let allowed_duration_del_check = Duration::new(DELCHECKPERIOD.into(), 0);
+        let mut del_check_period_start_time = Instant::now();
+
+        loop {                  // TODO:  Examine if this loop is expensive
+            if responder.poll(zmq::POLLIN, 10).expect("client failed polling") > 0
+            {
+                let message = responder.recv_msg(0).unwrap();
+                // ToDo: Incoming message should allow for different types of message
+                // like "update", "join", "ping", "health", etc
+
+                // deserialization examples:
+                // let deserialized: HashMap<String, String> = serde_json::from_str(&message.as_str().unwrap()).unwrap();
+                // let deserialized: HashMap<String, String> = serde_cbor::from_slice(&message).unwrap();
+
+                let deserialized: Message = serde_cbor::from_slice(&message).unwrap();
+                responder.send("ACK", 0).unwrap();
+                self.handle_message(&deserialized);  // TODO:  Handle messages on green threads to prevent over-running gossip interval
+            }
+
+            // Check if heartbeat interval elapsed, send heartbeat/update message to peers
+            if gossip_period_start_time.elapsed() > allowed_duration_gossip {
+                // TODO:  Debug print statements, remove later
+                println!("Here's what my adjacent nodes are now: {:#?}", self.adjacent);
+                println!("Here's what my delinquent nodes are now: {:#?}", self.delinquent);
+
+                self.update_neighbors();       // TODO:  Send messages on green threads to prevent over-running gossip interval
+                gossip_period_start_time = Instant::now();
+            }
+
+            // Check if heartbeat interval elapsed, send heartbeat/update message to peers
+            if del_check_period_start_time.elapsed() > allowed_duration_del_check {
+                self.delinquent_node_check();       // TODO:  Send messages on green threads to prevent over-running gossip interval
+                del_check_period_start_time = Instant::now();
+            }
+        }
     }
 
     // TO BE IMPLEMENTED
-    // fn comm_send_gossip()
     // fn join()                // May not be needed - just start a node with known adjacent nodes
-    // fn add_node()
+    // fn add_node()            // This may belong in garyctl - just send a gossip message with new node
 }
