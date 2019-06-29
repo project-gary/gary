@@ -9,13 +9,13 @@ pub enum MessageType {
     Gossip,
     Sync,
     Ping,
-    Health,
+    Heartbeat,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct Message {
-    pub target: String,
-    pub sender: String,
+pub struct Message<'a> {
+    pub target: &'a str,
+    pub sender: &'a str,
     pub msg_type: MessageType,
     pub payload: Vec<String>, // Maybe change to something more JSON friendly
 }
