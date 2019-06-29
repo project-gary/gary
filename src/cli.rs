@@ -84,12 +84,6 @@ pub fn cli() {
 fn run(targets: Arc<Mutex<HashMap<String, DateTime<Utc>>>>) {
     println!("Starting server");
 
-    let mut node_hash: HashMap<String, DateTime<Utc>> = HashMap::new();
-    node_hash.insert("192.168.1.342".to_string(), Utc::now());
-    node_hash.insert("Bobby".to_string(), Utc::now());
-    let mutex = Mutex::new(node_hash);
-    let cluster_nodes: Arc<Mutex<HashMap<String, DateTime<Utc>>>> = Arc::new(mutex);
-
     // cluster consts - need to be CLI args
     const NODEHOSTNAME: &str = "nodehostname8675309";
     // const NODELISTENERPORT: u16 = 5555;
