@@ -1,7 +1,8 @@
-use core::cluster_api::*;
+
 use chrono::{DateTime, Utc};
+use core::cluster_api::*;
+use std::sync::{Arc, Mutex};
 use std::collections::HashMap;
-use std::sync::{Arc,Mutex};
 
 pub struct ZmqClusterApi {
     zmq_ctx: zmq::Context,
@@ -10,18 +11,16 @@ pub struct ZmqClusterApi {
 
 impl ZmqClusterApi {
     pub fn new(nodes: Arc<Mutex<HashMap<String, DateTime<Utc>>>>) -> ZmqClusterApi {
-        ZmqClusterApi{
+        ZmqClusterApi {
             zmq_ctx: zmq::Context::new(),
-            cluster_nodes: nodes.clone(),
+            cluster_nodes: nodes,
         }
     }
 
     pub fn run(&self) {
         let responder = self.zmq_ctx.socket(zmq::REP).unwrap();
-        println!("Here");
         assert!(responder.bind("tcp://127.0.0.1:5556").is_ok());
-        println!("After Assert");
-        loop { 
+        loop {
             if let Ok(msg) = responder.recv_bytes(0) {
                 let data = self.cluster_nodes.lock().unwrap();
                 let message = "marek".as_bytes();
@@ -37,9 +36,6 @@ impl ZmqClusterApi {
 }
 
 
-
 impl ClusterApi for ZmqClusterApi {
-    fn ClusterRequest(&self, req: ClusterRequest) {
-                
-    }
+    fn ClusterRequest(&self, req: ClusterRequest) {}
 }
