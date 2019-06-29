@@ -49,8 +49,6 @@ pub fn cli() {
         .get_matches();
 
     let mut node_hash: HashMap<String, DateTime<Utc>> = HashMap::new();
-    node_hash.insert("192.168.1.342".to_string(), Utc::now());
-    node_hash.insert("Bobby".to_string(), Utc::now());
 
     let mut targets: Vec<String> = Vec::new();
     if matches.is_present("target") {
