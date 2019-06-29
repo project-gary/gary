@@ -19,6 +19,7 @@ pub struct ZmqNode {
     main_thread_sender: Sender<&'static str>, // Sender to main thread channel
     pub adjacent: HashMap<String, DateTime<Utc>>, // Contains vector of ids to minimize storage
     delinquent: HashMap<String, DateTime<Utc>>, // Format is (host_addr, time_reported)
+    removed: HashMap<String, DateTime<Utc>>, // Format is (host_addr, time_reported)
 }
 
 impl ClusterCommunicator for ZmqNode {
@@ -38,7 +39,7 @@ impl ClusterCommunicator for ZmqNode {
             Err(e) => println!("Error sending message to {}: {:?}", target, e),
         }
         assert!(requester.disconnect(&target_addr).is_ok());
-        if ack.len() > 0 {
+        if ack.len() > 0 {          // TODO:  Check that ack == "ACK" ?  Or just message length > 0?
             return true;
         } else {
             return false;
@@ -47,15 +48,18 @@ impl ClusterCommunicator for ZmqNode {
 
     fn handle_message(&mut self, msg: &Message) {
         match &msg.msg_type {
-            MessageType::Join => println!("Message Type: {:?}", &msg.msg_type),
-            MessageType::Remove => println!("Message Type: {:?}", &msg.msg_type),
+            MessageType::Join => println!("Message Type Received: {:?}", &msg.msg_type),
+            MessageType::Remove => println!("Message Type Received: {:?}", &msg.msg_type),
             MessageType::Gossip => {
-                println!("Message Type: {:?}", &msg.msg_type);
+                println!("Message Type Received: {:?}", &msg.msg_type);
                 self.comm_recv_gossip(&msg.payload);
             }
-            MessageType::Sync => println!("Message Type: {:?}", &msg.msg_type),
-            MessageType::Ping => println!("Message Type: {:?}", &msg.msg_type),
-            MessageType::Health => println!("Message Type: {:?}", &msg.msg_type),
+            MessageType::Sync => println!("Message Type Received: {:?}", &msg.msg_type),
+            MessageType::Ping => println!("Message Type Received: {:?}", &msg.msg_type),
+            MessageType::Heartbeat =>  {
+                println!("Message Type Received: {:?}", &msg.msg_type);
+                // self.comm_recv_heartbeat();  // Currently handled in Node.run() by 'responder.send("ACK", 0).unwrap();'
+            }
         }
     }
 
@@ -68,6 +72,11 @@ impl ClusterCommunicator for ZmqNode {
             }
         }
     }
+
+    // fn comm_recv_heartbeat(&mut self) {
+        // Currently handled in Node.run() by 'responder.send("ACK", 0).unwrap();'
+    //     println!("received heartbeat");
+    // }
 
     fn get_nghbr_sample(&self) -> Vec<String> {
         let mut adj_node_sample: Vec<String> = Vec::new();
@@ -126,10 +135,41 @@ impl ClusterCommunicator for ZmqNode {
     }
 
     fn delinquent_node_check(&mut self) {
+        const DELINQUENTPERIOD: u64 = 3600; // seconds
+        let now = Utc::now();
+
+        let allowed_duration_delinquent = Duration::new(DELINQUENTPERIOD.into(), 0);
+
         println!("Checking delinquent nodes again...");
-        // If node responds to heartbeat, move back to adjacent node - implement heartbeat
-        // If node doesn not respond and timestamp does not exceed spec'd duration, continue
-        // If timestamp exceeds some spec'd duration, remove node or add to a deleted_nodes field in Node
+        let delinquent_vec = self
+                .delinquent
+                .keys()
+                .map(|x| x.clone())
+                .collect::<Vec<String>>();
+        for node in delinquent_vec {
+            let msg = Message {
+                target: &node,
+                sender: &self.host_addr,
+                msg_type: MessageType::Heartbeat,
+                payload: Vec::new(), // ToDo:  Fix to use a ref instead - https://matklad.github.io/2018/05/04/encapsulating-lifetime-of-the-field.html
+            };
+            let result = self.send_message(&node, &msg);
+            // If node responds to heartbeat, move back to adjacent node - implement heartbeat
+            if result {
+                self.adjacent.insert(node.clone(), Utc::now());
+                self.delinquent.remove(&node);
+            } else {
+                let node_delinquent_time = self.delinquent.get(&node).unwrap().clone();  // TODO:  More clones, must eliminate...
+                let time_difference = now.signed_duration_since(node_delinquent_time).to_std().unwrap();
+                
+                // If node doesn not respond and timestamp does not exceed spec'd duration, continue
+                // If timestamp exceeds some spec'd duration, remove node or add to a deleted_nodes field in Node
+                if time_difference > allowed_duration_delinquent {
+                    self.removed.insert(node.clone(), Utc::now());
+                    self.delinquent.remove(&node);
+                }
+            }
+        }
     }
 }
 
@@ -147,6 +187,7 @@ impl ZmqNode {
             main_thread_sender: mt_sender,
             adjacent: HashMap::new(),   //HashMap<&str, DateTime<UTC>>,
             delinquent: HashMap::new(), //HashMap<&str, DateTime>,
+            removed: HashMap::new(), //HashMap<&str, DateTime>,
         }
     }
 
@@ -157,14 +198,14 @@ impl ZmqNode {
     pub fn run(&mut self) {
         // Server setup
         const GOSSIPPERIOD: u64 = 2; // seconds
-        const DELCHECKPERIOD: u64 = 10; // seconds
+        const DELCHECKPERIOD: u64 = 30; // seconds
 
         let responder = self.node_comm_ctx.socket(zmq::REP).unwrap();
         assert!(responder.bind("tcp://*:5555").is_ok());
 
         // Gossip
         let allowed_duration_gossip = Duration::new(GOSSIPPERIOD.into(), 0);
-        let mut gossip_period_start_time = Instant::now();
+        let mut gossip_period_start_time = Instant::now();  // TODO: Switch to using chrono for time everywhere
 
         // Delinquent node check
         let allowed_duration_del_check = Duration::new(DELCHECKPERIOD.into(), 0);

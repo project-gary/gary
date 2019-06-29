@@ -9,7 +9,7 @@ pub enum MessageType {
     Gossip,
     Sync,
     Ping,
-    Health,
+    Heartbeat,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
