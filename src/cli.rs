@@ -1,10 +1,15 @@
 use crate::cluster_management;
 use crate::deployment_management;
+use crate::cluster_api;
 use clap::{App, Arg};
 use daemonize::Daemonize;
 // use std::sync::mpsc::{Receiver, Sender};
 use std::sync::mpsc;
 use std::thread;
+
+use chrono::{DateTime, Utc};
+use std::collections::HashMap;
+use std::sync::{Arc,Mutex};
 
 pub fn cli() {
     let matches = App::new("Gary")
@@ -54,6 +59,12 @@ pub fn cli() {
 fn run() {
     println!("Starting server");
 
+    let mut node_hash: HashMap<String, DateTime<Utc>> = HashMap::new();
+    node_hash.insert("192.168.1.342".to_string(), Utc::now());
+    node_hash.insert("Bobby".to_string(), Utc::now());
+    let mutex = Mutex::new(node_hash);
+    let cluster_nodes: Arc<Mutex<HashMap<String, DateTime<Utc>>>> = Arc::new(mutex);
+
     // cluster consts - need to be CLI args
     const NODEHOSTNAME: &str = "nodehostname8675309";
     // const NODELISTENERPORT: u16 = 5555;
@@ -76,6 +87,11 @@ fn run() {
             "somenode4".to_string(),
         ];
         cluster_management::start_node(tx_mt, rx_dm, NODEHOSTNAME, init_neighbors); // Communicates with Main Thread
+    });
+
+    let api_nodes = cluster_nodes.clone();
+    thread::spawn(move || {
+        cluster_api::start(api_nodes);
     });
 
     // run deployment management on this thread

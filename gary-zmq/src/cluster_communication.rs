@@ -113,7 +113,7 @@ impl ClusterCommunicator for ZmqNode {
                 .keys()
                 .map(|x| x.clone())
                 .collect::<Vec<String>>();
-            println!("Sent update for {:?}", nghbr_sample);
+            //println!("Sent update for {:?}", nghbr_sample);
             for nghbr in nghbr_sample {
                 let msg = Message {
                     target: &nghbr,

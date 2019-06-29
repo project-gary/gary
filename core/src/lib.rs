@@ -3,3 +3,4 @@ pub mod comm;
 pub mod data;
 pub mod network;
 pub mod tests;
+pub mod cluster_api;

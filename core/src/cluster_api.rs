@@ -1,27 +1,25 @@
-pub trait ClusterApi {}
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 
 #[repr(u8)]
 #[derive(Serialize, Deserialize, Debug)]
 pub enum ResourceAction {
-    Get = 0,
+    Get,
     Set,
     Update,
 }
-
+#[derive(Serialize, Deserialize, Debug)]
 pub enum ResourceType {
-    Nodes = 0,
+    Nodes,
 }
 
 pub trait ClusterApi {
-
+    fn ClusterRequest(&self, req: ClusterRequest);
 }
 
-pub struct ClusterApiRequest {
-    fn ReciveClusterRequest
-}
-
+#[derive(Serialize, Deserialize, Debug)]
 pub struct ClusterRequest {
-    action: ResourceAction,
-    r_type: ResourceType,
-    args: String,
+    pub action: ResourceAction,
+    pub r_type: ResourceType,
+    pub args: String,
 }
