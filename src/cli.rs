@@ -1,3 +1,4 @@
+use crate::cluster_api;
 use crate::cluster_management;
 use crate::deployment_management;
 use clap::{App, Arg};
@@ -5,6 +6,10 @@ use daemonize::Daemonize;
 // use std::sync::mpsc::{Receiver, Sender};
 use std::sync::mpsc;
 use std::thread;
+
+use chrono::{DateTime, Utc};
+use std::collections::HashMap;
+use std::sync::{Arc, Mutex};
 
 pub fn cli() {
     let matches = App::new("Gary")
@@ -17,6 +22,7 @@ pub fn cli() {
                 .long("config")
                 .value_name("FILE")
                 .help("Sets a custom config file")
+                .multiple(false)
                 .takes_value(true),
         )
         .arg(
@@ -32,8 +38,30 @@ pub fn cli() {
                 .multiple(false)
                 .help("Setting this flag will enable running as a daemon"),
         )
+        .arg(
+            Arg::with_name("target")
+                .short("t")
+                .long("target")
+                .takes_value(true)
+                .multiple(true)
+                .help("The initial node to try and reach to join the cluster"),
+        )
         .get_matches();
 
+    let mut node_hash: HashMap<String, DateTime<Utc>> = HashMap::new();
+
+    let mut targets: Vec<String> = Vec::new();
+    if matches.is_present("target") {
+        let mut t = matches.values_of("target").unwrap();
+        for f in t {
+            node_hash.insert(String::from(f), Utc::now());
+        }
+    }
+
+    let mutex = Mutex::new(node_hash);
+    let cluster_nodes: Arc<Mutex<HashMap<String, DateTime<Utc>>>> = Arc::new(mutex);
+
+    //TODO: use config file if exists for vars
     if matches.is_present("daemon") {
         println!("Running as daemon");
         let daemonize = Daemonize::new()
@@ -43,15 +71,15 @@ pub fn cli() {
             .user("root")
             .group("daemon");
         match daemonize.start() {
-            Ok(_) => run(),
+            Ok(_) => run(cluster_nodes),
             Err(e) => println!("Should log failure to become daemon. error: {}", e),
         };
     } else {
-        run();
+        run(cluster_nodes);
     }
 }
 
-fn run() {
+fn run(targets: Arc<Mutex<HashMap<String, DateTime<Utc>>>>) {
     println!("Starting server");
 
     // cluster consts - need to be CLI args
@@ -64,18 +92,18 @@ fn run() {
     // Channel to main thread for debug
     let (tx_mt, rx_mt): (mpsc::Sender<&str>, mpsc::Receiver<&str>) = mpsc::channel();
 
+    let cm_targets = targets.clone();
     //spawn a new thread for cluster management
     thread::spawn(move || {
         println!("starting first node in the cluster");
         // cluster_management::start_node(tx_cm, rx_dm);  // Communicates with Deployment Manager
-        let init_neighbors: Vec<String> = vec![
-            // TODO: testing - remove later
-            "somenode1".to_string(),
-            "somenode2".to_string(),
-            "somenode3".to_string(),
-            "somenode4".to_string(),
-        ];
-        cluster_management::start_node(tx_mt, rx_dm, NODEHOSTNAME, init_neighbors); // Communicates with Main Thread
+
+        cluster_management::start_node(tx_mt, rx_dm, NODEHOSTNAME, cm_targets); // Communicates with Main Thread
+    });
+
+    let api_nodes = targets.clone();
+    thread::spawn(move || {
+        cluster_api::start(api_nodes);
     });
 
     // run deployment management on this thread

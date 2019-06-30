@@ -1,5 +1,7 @@
 use super::data::*;
 use super::network::*;
+use chrono::{DateTime, Utc};
+use std::collections::HashMap;
 
 /*
 * Node to node private cluster communication
@@ -10,7 +12,7 @@ pub trait ClusterCommunicator {
      * */
     fn send_message(&self, target: &str, msg: &Message) -> bool;
     fn handle_message(&mut self, msg: &Message);
-    fn get_nghbr_sample(&self) -> Vec<String>;
+    fn get_nghbr_sample(&self, mut a: &HashMap<String, DateTime<Utc>>) -> Vec<String>;
     fn comm_recv_gossip(&mut self, payload: &Vec<String>);
     // fn comm_recv_heartbeat(&mut self);  // Currently handled in Node.run() by 'responder.send("ACK", 0).unwrap();'
     fn update_neighbors(&mut self);
@@ -35,10 +37,3 @@ pub trait DeploymentCommunicator {
 
 /* not sure if I like these */
 pub trait DeploymentCommunicationReceiver {}
-
-/*
-* public api, aka, backend of cli tool and maybe web ui
-* */
-pub trait ClusterApi {
-    fn my_fn();
-}
