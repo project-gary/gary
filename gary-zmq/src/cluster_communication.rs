@@ -6,7 +6,6 @@ use std::collections::HashMap;
 
 use chrono::{DateTime, Utc};
 
-
 use rand::Rng;
 use serde_cbor;
 use serde_derive::{Deserialize, Serialize};

@@ -1,5 +1,3 @@
-#![crate_name = "example_async"]
-
 use std::env;
 use std::f64;
 use std::sync::mpsc::{channel, Receiver, Sender};
