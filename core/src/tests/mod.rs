@@ -13,14 +13,14 @@ pub mod tests {
         let mut deployment = Deployment {
             version: "apps/v1".to_string(),
             kind: "Deployment".to_string(),
-            metadata: MetaData {
+            metadata: Metadata {
                 name: Some("nginx-deployment".to_string()),
                 labels: HashMap::new(),
             },
             spec: DeploymentSpec {
                 replicas: 3,
                 template: DeploymentTemplate {
-                    metadata: MetaData {
+                    metadata: Metadata {
                         name: None,
                         labels: HashMap::new(),
                     },

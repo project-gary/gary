@@ -1,5 +1,6 @@
 use gary_zmq::cluster_communication::ZmqNode;
-use core::data::{DeploymentCommand,DeploymentReply,};
+//use core::data::{DeploymentCommand,DeploymentReply,};
+use core::data::{*};
 // use std::collections::HashMap;
 use chrono::{DateTime, Utc};
 use std::collections::HashMap;
@@ -23,6 +24,31 @@ pub fn start_node(
     //         }
     //     }
     // }
+
+    // hard-code a deployment
+    let sleep_deployment = Deployment {
+      version: "0.1".to_string(),
+      kind: DeploymentType::Process,
+      metadata: Metadata {
+        name: None,
+        labels: None,
+      },
+      spec: DeploymentSpec {
+        replicas: 3,
+        template: DeploymentTemplate {
+          metadata: Metadata {
+            name: None,
+            labels: None,
+          },
+          spec: Spec::ProcessSpec(ProcessSpec {
+            cmd: "/bin/sleep".to_string(),
+            args: Some("inf".to_string()),
+          }),
+        }
+      }
+
+    };
+    // end hard-code
 
     println!("Initial representation of a running Node");
     let mut myself = ZmqNode::new(sender, host_addr, init_neighbors); //, sender.to_owned());

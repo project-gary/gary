@@ -57,7 +57,7 @@ pub struct Deployment {
     #[serde(alias = "apiVersion")]
     pub version: String,
     pub kind: DeploymentType,
-    pub metadata: MetaData,
+    pub metadata: Metadata,
     pub spec: DeploymentSpec,
 }
 
@@ -69,14 +69,14 @@ pub struct DeploymentSpec {
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct DeploymentTemplate {
-    pub metadata: MetaData,
+    pub metadata: Metadata,
     pub spec: Spec,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub struct MetaData {
+pub struct Metadata {
     pub name: Option<String>,
-    pub labels: HashMap<String, String>,
+    pub labels: Option<HashMap<String, String>>,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
