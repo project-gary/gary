@@ -5,4 +5,5 @@ authors = ["Danny Sauer <dsauer@suse.com>"]
 edition = "2018"
 
 [dependencies]
-core = { path = "../../core" }
+core     = { path = "../../core" }
+executor = { path = "../../executor" }

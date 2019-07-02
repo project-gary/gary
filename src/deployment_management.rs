@@ -1,9 +1,8 @@
 use core::data::{Deployment, DeploymentCommand, DeploymentReply, DeploymentType};
+use process::process_executor;
 use std::result::Result;
 use std::sync::mpsc::{Receiver, Sender};
-use std::thread;
 use std::time::Duration;
-use process::process_executor;
 
 // data structures should go somewhere else.  But, for now...
 
@@ -31,14 +30,11 @@ pub fn manage_deployments(
                 // new deployment
                 DeploymentCommand::NewDeploy(d) => {
                     let name = d.metadata.name.clone().unwrap_or("unknown".to_string());
-                    create_deployment(&d);
-                    tx.send(DeploymentReply::NewDeploy(
-                        d.metadata.name.clone().unwrap(),
-                        Result::Ok(name),
-                    ))
-                    .unwrap(); //TODO: handle error?
-                }
-                // other commands!
+                    let orig_name = d.metadata.name.clone().unwrap();
+                    create_deployment(d);
+                    tx.send(DeploymentReply::NewDeploy(orig_name, Result::Ok(name)))
+                        .unwrap(); //TODO: handle error?
+                } // other commands!
             }
         }
     }
@@ -51,13 +47,13 @@ fn debug<'debuggin>(tx: &Sender<&'debuggin str>, msg: &'debuggin str) {
 }
 
 // TODO: check for errors :D
-fn create_deployment(d: &Deployment) {
+fn create_deployment(d: Deployment) {
     let name = d.metadata.name.clone().unwrap_or("unknown".to_string());
     println!("Deployment '{}' definition: {:#?}", name, d);
     match d.kind {
         DeploymentType::Process => {
             println!("Deploying a process");
-            process_executor::deploy(&d);
+            process_executor::deploy(d);
         }
         DeploymentType::Docker => {
             println!("Deploying a container");
