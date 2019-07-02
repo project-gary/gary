@@ -167,6 +167,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "docker"
+version = "0.1.0"
+
+[[package]]
 name = "dtoa"
 version = "0.4.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -175,6 +179,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "error-chain"
 version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "executor"
+version = "0.1.0"
 
 [[package]]
 name = "fnv"
@@ -444,6 +452,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "unicode-xid 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
+
+[[package]]
+name = "process"
+version = "0.1.0"
 
 [[package]]
 name = "quote"

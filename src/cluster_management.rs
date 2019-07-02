@@ -1,4 +1,5 @@
 use gary_zmq::cluster_communication::ZmqNode;
+use core::data::{DeploymentCommand,DeploymentReply,};
 // use std::collections::HashMap;
 use chrono::{DateTime, Utc};
 use std::collections::HashMap;
@@ -7,7 +8,8 @@ use std::sync::{Arc, Mutex};
 
 pub fn start_node(
     sender: Sender<&'static str>,
-    receiver: Receiver<&str>,
+    exec_cmd_tx: Sender<DeploymentCommand>,
+    exec_cmd_rx: Receiver<DeploymentReply>,
     host_addr: &str,
     init_neighbors: Arc<Mutex<HashMap<String, DateTime<Utc>>>>,
     // node_listener_port: u16,

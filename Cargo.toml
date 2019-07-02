@@ -24,4 +24,7 @@ members = [
     "core",
     "gary-zmq",
     "garyctl",
+    "executor",
+    "executor/process",
+    "executor/docker",
 ]
