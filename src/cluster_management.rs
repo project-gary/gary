@@ -30,7 +30,7 @@ pub fn start_node(
       version: "0.1".to_string(),
       kind: DeploymentType::Process,
       metadata: Metadata {
-        name: None,
+        name: Some("sleep_demo".to_string()),
         labels: None,
       },
       spec: DeploymentSpec {
@@ -48,6 +48,7 @@ pub fn start_node(
       }
 
     };
+    exec_cmd_tx.send( DeploymentCommand::NewDeploy(sleep_deployment) ).unwrap(); //TODO: debug
     // end hard-code
 
     println!("Initial representation of a running Node");
