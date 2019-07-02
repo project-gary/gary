@@ -183,6 +183,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "executor"
 version = "0.1.0"
+dependencies = [
+ "core 0.1.0",
+ "process 0.1.0",
+]
 
 [[package]]
 name = "fnv"
@@ -221,8 +225,10 @@ dependencies = [
  "clap 2.33.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "core 0.1.0",
  "daemonize 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "executor 0.1.0",
  "gary-zmq 0.1.0",
  "log 0.4.6 (registry+https://github.com/rust-lang/crates.io-index)",
+ "process 0.1.0",
 ]
 
 [[package]]
@@ -456,6 +462,9 @@ dependencies = [
 [[package]]
 name = "process"
 version = "0.1.0"
+dependencies = [
+ "core 0.1.0",
+]
 
 [[package]]
 name = "quote"

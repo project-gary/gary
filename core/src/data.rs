@@ -38,12 +38,13 @@ pub enum DeploymentCommand {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub enum DeploymentType {
   Process,
+  Docker,
 }
 
 #[derive(Debug, PartialEq)]
 pub enum DeploymentReply {
   // name, result
-  NewDeploy(&'static str, Result<&'static str, &'static str>),
+  NewDeploy(String, Result<String, String>),
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]

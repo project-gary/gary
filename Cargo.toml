@@ -14,6 +14,8 @@ path = "src/main.rs"
 clap = "2.33.0"
 core = { path = "core"}
 gary-zmq = { path = "gary-zmq" }
+executor = { path = "executor" }
+process = { path = "executor/process" }
 daemonize = "0.4.1"
 log = "0.4.6"
 chrono = "0.4"

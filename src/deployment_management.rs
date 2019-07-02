@@ -1,8 +1,9 @@
-use core::data::{DeploymentCommand, DeploymentReply, Deployment};
+use core::data::{Deployment, DeploymentCommand, DeploymentReply, DeploymentType};
 use std::result::Result;
 use std::sync::mpsc::{Receiver, Sender};
 use std::thread;
 use std::time::Duration;
+use process::process_executor;
 
 // data structures should go somewhere else.  But, for now...
 
@@ -11,18 +12,12 @@ pub fn manage_deployments(
     rx: Receiver<DeploymentCommand>,
     debug_tx: Sender<&str>,
 ) {
-    // check to see if we have a command waiting to run
-
     /* if we received a command to start a new deployment:
       - determine the type
       - find a manager for deployments of that type
       - respond with the node id running it / error (a Result)
     */
-    thread::sleep(Duration::from_secs(1));
-    println!("boom");
-    debug_tx
-        .send("Started deployment manager thread")
-        .unwrap_or_else(|e| panic!("Failed to send debug message: {}", e));
+    debug(&debug_tx, "Started deployment manager thread");
 
     let timeout = Duration::from_secs(15);
     loop {
@@ -30,23 +25,42 @@ pub fn manage_deployments(
         if msg.is_err() {
             // https://doc.rust-lang.org/std/sync/mpsc/enum.RecvTimeoutError.html
             // Timeout or Disconnected
-            debug_tx
-                .send("manager command receive timed out")
-                .unwrap_or_else(|e| panic!("Failed to send debug message: {}", e));
-        }else{
+            debug(&debug_tx, "manager command receive timed out");
+        } else {
             match msg.unwrap() {
-              DeploymentCommand::NewDeploy(d) => {
-                create_deployment(d);
-                let name = "";
-                tx.send(DeploymentReply::NewDeploy(
-                  name, Result::Ok(name)
-                )).unwrap(); //TODO: handle error?
-              },
+                // new deployment
+                DeploymentCommand::NewDeploy(d) => {
+                    let name = d.metadata.name.clone().unwrap_or("unknown".to_string());
+                    create_deployment(&d);
+                    tx.send(DeploymentReply::NewDeploy(
+                        d.metadata.name.clone().unwrap(),
+                        Result::Ok(name),
+                    ))
+                    .unwrap(); //TODO: handle error?
+                }
+                // other commands!
             }
         }
     }
 }
 
-fn create_deployment(d:Deployment){
-  println!("Deployment is {:#?}", d);
+// probably a better way, but for now...
+fn debug<'debuggin>(tx: &Sender<&'debuggin str>, msg: &'debuggin str) {
+    tx.send(msg)
+        .unwrap_or_else(|e| panic!("Failed to send debug message: {}", e));
+}
+
+// TODO: check for errors :D
+fn create_deployment(d: &Deployment) {
+    let name = d.metadata.name.clone().unwrap_or("unknown".to_string());
+    println!("Deployment '{}' definition: {:#?}", name, d);
+    match d.kind {
+        DeploymentType::Process => {
+            println!("Deploying a process");
+            process_executor::deploy(&d);
+        }
+        DeploymentType::Docker => {
+            println!("Deploying a container");
+        }
+    }
 }
