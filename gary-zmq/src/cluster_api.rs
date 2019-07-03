@@ -20,7 +20,7 @@ impl ZmqClusterApi {
     pub fn run(&self) {
         let responder = self.zmq_ctx.socket(zmq::REP).unwrap();
 
-        let connection = format!("tcp://{}:{}", TARGET, API_PORT);
+        let connection = format!("tcp://{}:{}", TARGET, GOSSIP_PORT);
         assert!(responder.bind(&connection).is_ok());
         loop {
             if let Ok(msg) = responder.recv_bytes(0) {
