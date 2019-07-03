@@ -2,6 +2,7 @@ use crate::cluster_api;
 use crate::cluster_management;
 use crate::deployment_management;
 use clap::{App, Arg};
+use core::data::{DeploymentCommand, DeploymentReply};
 use daemonize::Daemonize;
 // use std::sync::mpsc::{Receiver, Sender};
 use std::sync::mpsc;
@@ -88,17 +89,27 @@ fn run(targets: Arc<Mutex<HashMap<String, DateTime<Utc>>>>) {
 
     //create thread channels
     let (tx_cm, rx_cm): (mpsc::Sender<&str>, mpsc::Receiver<&str>) = mpsc::channel();
-    let (tx_dm, rx_dm): (mpsc::Sender<&str>, mpsc::Receiver<&str>) = mpsc::channel();
+    // commands sent to deployment manager
+    let (tx_dmc, rx_dmc): (
+        mpsc::Sender<DeploymentCommand>,
+        mpsc::Receiver<DeploymentCommand>,
+    ) = mpsc::channel();
+    // command results / replies from deployment manager
+    let (tx_dmr, rx_dmr): (
+        mpsc::Sender<DeploymentReply>,
+        mpsc::Receiver<DeploymentReply>,
+    ) = mpsc::channel();
     // Channel to main thread for debug
-    let (tx_mt, rx_mt): (mpsc::Sender<&str>, mpsc::Receiver<&str>) = mpsc::channel();
+    let (tx_debug, rx_debug): (mpsc::Sender<&str>, mpsc::Receiver<&str>) = mpsc::channel();
 
     let cm_targets = targets.clone();
+    let cm_tx_debug = tx_debug.clone();
     //spawn a new thread for cluster management
     thread::spawn(move || {
         println!("starting first node in the cluster");
         // cluster_management::start_node(tx_cm, rx_dm);  // Communicates with Deployment Manager
 
-        cluster_management::start_node(tx_mt, rx_dm, NODEHOSTNAME, cm_targets); // Communicates with Main Thread
+        cluster_management::start_node(cm_tx_debug, tx_dmc, rx_dmr, NODEHOSTNAME, cm_targets); // Communicates with Main Thread
     });
 
     let api_nodes = targets.clone();
@@ -106,18 +117,23 @@ fn run(targets: Arc<Mutex<HashMap<String, DateTime<Utc>>>>) {
         cluster_api::start(api_nodes);
     });
 
-    // run deployment management on this thread
-    println!("starting deployment management");
-    deployment_management::manage_deployments(tx_dm, rx_cm);
+    // spawn deployment management thread
+    let dm_tx_debug = tx_debug.clone();
+    thread::spawn(move || {
+        println!("starting deployment management");
+        deployment_management::manage_deployments(tx_dmr, rx_dmc, dm_tx_debug);
+    });
 
     loop {
         // Consider using mpsc::Receiver::poll()
-        match rx_mt.recv() {
-            Ok(i) => println!("got this from cluster mgmt: {}", i),
+        match rx_debug.recv() {
+            Ok(i) => println!("Debug message: {}", i),
             Err(_) => {
-                // println!("channel closed");
-                // break;
+                println!("Debug channel closed");
+                break;
             }
         }
     }
+
+    //TODO: kill the threads
 }

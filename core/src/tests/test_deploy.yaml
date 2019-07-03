@@ -1,5 +1,5 @@
-apiVersion: apps/v1
-kind: Deployment
+version: apps/v1
+kind: Docker
 metadata:
   name: nginx-deployment
   labels:
@@ -8,11 +8,14 @@ spec:
   replicas: 3
   template:
     metadata:
+      name: ~
       labels:
         app: nginx
     spec:
-      containers:
-      - name: nginx
-        image: nginx:1.7.9
-        ports:
-        - containerPort: 80
+      DockerSpec:
+        containers:
+          - name: nginx
+            image: "nginx:1.7.9"
+            ports:
+              - container_port: 80
+

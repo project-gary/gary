@@ -167,6 +167,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "docker"
+version = "0.1.0"
+
+[[package]]
 name = "dtoa"
 version = "0.4.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -175,6 +179,13 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "error-chain"
 version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "executor"
+version = "0.1.0"
+dependencies = [
+ "core 0.1.0",
+]
 
 [[package]]
 name = "fnv"
@@ -213,8 +224,10 @@ dependencies = [
  "clap 2.33.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "core 0.1.0",
  "daemonize 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "executor 0.1.0",
  "gary-zmq 0.1.0",
  "log 0.4.6 (registry+https://github.com/rust-lang/crates.io-index)",
+ "process 0.1.0",
 ]
 
 [[package]]
@@ -443,6 +456,14 @@ version = "0.4.30"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "unicode-xid 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "process"
+version = "0.1.0"
+dependencies = [
+ "core 0.1.0",
+ "executor 0.1.0",
 ]
 
 [[package]]
