@@ -31,26 +31,26 @@ spec:
  * */
 
 pub enum DeploymentCommand {
-  // name, count, executor, params
-  NewDeploy(Deployment),
+    // name, count, executor, params
+    NewDeploy(Deployment),
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub enum DeploymentType {
-  Process,
-  Docker,
+    Process,
+    Docker,
 }
 
 #[derive(Debug, PartialEq)]
 pub enum DeploymentReply {
-  // name, result
-  NewDeploy(String, Result<String, String>),
+    // name, result
+    NewDeploy(String, Result<String, String>),
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub enum Spec {
-  ProcessSpec(ProcessSpec),
-  DockerSpec(DockerSpec),
+    ProcessSpec(ProcessSpec),
+    DockerSpec(DockerSpec),
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -87,9 +87,8 @@ pub struct DockerSpec {
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct ProcessSpec {
-    pub cmd: String, // I'd much rather use &str here, but lifetimes...
+    pub cmd: String,          // I'd much rather use &str here, but lifetimes...
     pub args: Option<String>, //TODO: this should be an iterable
-
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
