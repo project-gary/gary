@@ -7,7 +7,7 @@
 
     Node == machine/vm/whatever.
 
-Currently there are no binaries. To install you will need rust/cargo. The project can easily be built by running `cargo build` a docker build environment is on the road map but not currently supported.
+Currently there are no prebuilt binaries. Once we reach pre-alpha these will be maintained. To install you will need rust/cargo. The project can easily be built by running `cargo build` a docker build environment is on the road map but not currently supported.
 
 `cargo build` can also be used to build the `garyctl` client if you would like to use that to interact with your running cluster.
 

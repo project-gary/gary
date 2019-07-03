@@ -6,7 +6,10 @@ matrix:
         allow_failures:
                 - rust: nightly
         fast_finish: true
+before_script:
+        - rustup component add rustfmt
 script:
         - cargo build --verbose --all
         - cargo check --verbose --all
-        - cargo test --verbose --all
+        - cargo test  --verbose --all
+        - cargo fmt   --verbose --all -- --check --verbose
