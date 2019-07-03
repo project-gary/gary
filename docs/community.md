@@ -6,6 +6,8 @@ We follow standard Rust guide-lines for code. Before pushing any code,  `cargo f
 
 When submitting a PR. please keep it to a single commit with a change to a single bit of functionality.
 
-During the week of June 24th - June 28th a daily standup will take place to organize efforts probably at 9am EST, unless someone from the west coast people want to join. After if there is interest monthly meetings will take place.
+There are a lot of little things that need done, documentation, bugs and the likes. But there are also a lot of Features that need done as well. If you want to take on a feature, please read the (architecture)[architecture.md] document to ensure a good understanding of not only the goals, but also how they should be designed.
 
-There are a lot of little things that need done, documentation, bugs and the likes. But there are also a lot of Features that need done. If you want to take on a feature, please read the (architecture)[architecture.md] document to ensure a good understanding of not only the goals, but also how they should be designed.
+## Get involved!
+
+Join us on [discord](https://discord.gg/ASG55tf)!
