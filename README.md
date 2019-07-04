@@ -16,11 +16,11 @@ Code Name Gary
  * Other things 
 
 ## Project pre-alpha road map 
- [*] Initial Cluster API
- [*] Node to node cluster communication interface
- [*] Node to node cluster communication implementation (zeroMQ)
- [ ] Container Runtime integration
- [ ] Machine taints
+ - [x] Initial Cluster API
+ - [x] Node to node cluster communication interface
+ - [x] Node to node cluster communication implementation (zeroMQ)
+ - [ ] Container Runtime integration
+ - [ ] Machine taints
 
 ## Building and testing
 Building and local unit testing are made simple by cargo
