@@ -1,4 +1,3 @@
-use std::env;
 use std::f64;
 use std::sync::mpsc::{channel, Receiver, Sender};
 use std::thread;
@@ -125,21 +124,6 @@ fn run(ctx: &mut zmq::Context, size: u64, workers: u64) {
 }
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
-
-    let args = if env::var("RUST_BENCH").is_ok() {
-        vec!["".to_string(), "1000000".to_string(), "10000".to_string()]
-    } else if args.len() <= 1 {
-        vec!["".to_string(), "10000".to_string(), "4".to_string()]
-    } else {
-        args
-    };
-    /*
-        let args = vec!["".to_string(), "10000000".to_string(), "1".to_string()];
-
-        let size = args[1].parse().unwrap();
-        let workers = args[2].parse().unwrap();
-    */
     let mut ctx = zmq::Context::new();
 
     run(&mut ctx, 1000000, 1);

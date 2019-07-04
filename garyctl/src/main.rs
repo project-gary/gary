@@ -3,7 +3,6 @@ extern crate core;
 use clap::{App, Arg, ArgMatches, SubCommand};
 use core::cluster_api::*;
 use core::defaults::*;
-use zmq::{Context, Message};
 
 fn main() {
     let matches = App::new("Gary")
@@ -62,7 +61,7 @@ fn main() {
     println!("Hello, world!");
 }
 
-fn get(resource_type: String, matches: &ArgMatches) {
+fn get(_resource_type: String, matches: &ArgMatches) {
     println!("getting nodes");
 
     //Default target
@@ -76,7 +75,7 @@ fn get(resource_type: String, matches: &ArgMatches) {
 
     println!("Getting list of nodes from {}", target);
     let ctx = zmq::Context::new();
-    let mut sock = ctx.socket(zmq::SocketType::REQ).unwrap();
+    let sock = ctx.socket(zmq::SocketType::REQ).unwrap();
     let _ = sock.connect(&connection);
     let payload = ClusterRequest {
         action: ResourceAction::Get,

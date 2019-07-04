@@ -12,7 +12,7 @@ pub trait ClusterCommunicator {
      * */
     fn send_message(&self, target: &str, msg: &Message) -> bool;
     fn handle_message(&mut self, msg: &Message);
-    fn get_nghbr_sample(&self, mut a: &HashMap<String, DateTime<Utc>>) -> Vec<String>;
+    fn get_nghbr_sample(&self, a: &HashMap<String, DateTime<Utc>>) -> Vec<String>;
     fn comm_recv_gossip(&mut self, payload: &Vec<String>);
     // fn comm_recv_heartbeat(&mut self);  // Currently handled in Node.run() by 'responder.send("ACK", 0).unwrap();'
     fn update_neighbors(&mut self);

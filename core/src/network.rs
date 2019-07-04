@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-use serde_cbor;
 
 #[repr(u8)]
 #[derive(Serialize, Deserialize, Debug)]

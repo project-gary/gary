@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 
 #[repr(u8)]
 #[derive(Serialize, Deserialize, Debug)]
@@ -14,7 +13,7 @@ pub enum ResourceType {
 }
 
 pub trait ClusterApi {
-    fn ClusterRequest(&self, req: ClusterRequest);
+    fn cluster_request(&self, req: ClusterRequest);
 }
 
 #[derive(Serialize, Deserialize, Debug)]
