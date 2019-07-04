@@ -50,9 +50,8 @@ pub fn cli() {
 
     let mut node_hash: HashMap<String, DateTime<Utc>> = HashMap::new();
 
-    let mut targets: Vec<String> = Vec::new();
     if matches.is_present("target") {
-        let mut t = matches.values_of("target").unwrap();
+        let t = matches.values_of("target").unwrap();
         for f in t {
             node_hash.insert(String::from(f), Utc::now());
         }
@@ -87,7 +86,7 @@ fn run(targets: Arc<Mutex<HashMap<String, DateTime<Utc>>>>) {
     // const NODELISTENERPORT: u16 = 5555;
 
     //create thread channels
-    let (tx_cm, rx_cm): (mpsc::Sender<&str>, mpsc::Receiver<&str>) = mpsc::channel();
+    let (_tx_cm, rx_cm): (mpsc::Sender<&str>, mpsc::Receiver<&str>) = mpsc::channel();
     let (tx_dm, rx_dm): (mpsc::Sender<&str>, mpsc::Receiver<&str>) = mpsc::channel();
     // Channel to main thread for debug
     let (tx_mt, rx_mt): (mpsc::Sender<&str>, mpsc::Receiver<&str>) = mpsc::channel();

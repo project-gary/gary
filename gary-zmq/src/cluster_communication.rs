@@ -1,6 +1,6 @@
 use core::comm::ClusterCommunicator;
 use core::network::{Message, MessageType};
-use std::sync::mpsc::{Receiver, Sender};
+use std::sync::mpsc::Sender;
 
 use std::collections::HashMap;
 
@@ -8,7 +8,6 @@ use chrono::{DateTime, Utc};
 
 use rand::Rng;
 use serde_cbor;
-use serde_derive::{Deserialize, Serialize};
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
@@ -18,7 +17,7 @@ pub struct ZmqNode {
     gossip_fanout: u8, // Adjacent nodes updated each gossip cycle
     // node_comm_port: u16,                        // Node communication port
     node_comm_ctx: zmq::Context, // zmq context - ToDo: make generic for other comm libs
-    main_thread_sender: Sender<&'static str>, // Sender to main thread channel
+    _main_thread_sender: Sender<&'static str>, // Sender to main thread channel
     pub adjacent: Arc<Mutex<HashMap<String, DateTime<Utc>>>>, // Contains vector of ids to minimize storage
     delinquent: HashMap<String, DateTime<Utc>>, // Format is (host_addr, time_reported)
     removed: HashMap<String, DateTime<Utc>>,    // Format is (host_addr, time_reported)
@@ -83,7 +82,7 @@ impl ClusterCommunicator for ZmqNode {
     //     println!("received heartbeat");
     // }
 
-    fn get_nghbr_sample(&self, mut a: &HashMap<String, DateTime<Utc>>) -> Vec<String> {
+    fn get_nghbr_sample(&self, a: &HashMap<String, DateTime<Utc>>) -> Vec<String> {
         let mut adj_node_sample: Vec<String> = Vec::new();
         if (a.len() as u8) <= self.gossip_fanout {
             // Not sure about the 'as' conversion
@@ -100,7 +99,7 @@ impl ClusterCommunicator for ZmqNode {
             }
         }
 
-        return adj_node_sample;
+        adj_node_sample
     }
 
     fn update_neighbors(&mut self) {
@@ -185,15 +184,11 @@ impl ZmqNode {
             gossip_fanout: 3,
             // node_comm_port: listener_port,
             node_comm_ctx: zmq::Context::new(),
-            main_thread_sender: mt_sender,
+            _main_thread_sender: mt_sender,
             adjacent: init_nodes,       //HashMap<&str, DateTime<UTC>>,
             delinquent: HashMap::new(), //HashMap<&str, DateTime>,
             removed: HashMap::new(),    //HashMap<&str, DateTime>,
         }
-    }
-
-    fn send_to_chan(&self, val: &'static str) {
-        self.main_thread_sender.send(val).unwrap();
     }
 
     pub fn run(&mut self) {
@@ -235,7 +230,7 @@ impl ZmqNode {
             // Check if heartbeat interval elapsed, send heartbeat/update message to peers
             if gossip_period_start_time.elapsed() > allowed_duration_gossip {
                 // TODO:  Debug print statements, remove later
-                if let Ok(mut a) = self.adjacent.lock() {
+                if let Ok(a) = self.adjacent.lock() {
                     println!("Here's what my adjacent nodes are now: {:#?}", a);
                     println!(
                         "Here's what my delinquent nodes are now: {:#?}",

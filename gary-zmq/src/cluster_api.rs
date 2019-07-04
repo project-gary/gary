@@ -23,11 +23,10 @@ impl ZmqClusterApi {
         let connection = format!("tcp://{}:{}", TARGET, GOSSIP_PORT);
         assert!(responder.bind(&connection).is_ok());
         loop {
-            if let Ok(msg) = responder.recv_bytes(0) {
+            if let Ok(_msg) = responder.recv_bytes(0) {
                 let data = self.cluster_nodes.lock().unwrap();
-                let message = "marek".as_bytes();
                 let mut v = "".to_string();
-                for (key, value) in data.iter() {
+                for (key, _) in data.iter() {
                     v = format!("{}\n{}", v, &key.clone());
                 }
                 let _ = responder.send(v.as_bytes(), 0);
@@ -37,5 +36,5 @@ impl ZmqClusterApi {
 }
 
 impl ClusterApi for ZmqClusterApi {
-    fn ClusterRequest(&self, req: ClusterRequest) {}
+    fn cluster_request(&self, _req: ClusterRequest) {}
 }
