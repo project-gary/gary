@@ -6,7 +6,6 @@ use std::fs;
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct ClusterConfig {
     //pub version: f32,
-
     #[serde(rename = "gossipConfig")]
     pub gossip_config: GossipConfig,
 

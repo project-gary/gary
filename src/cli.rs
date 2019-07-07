@@ -1,8 +1,8 @@
 use crate::cluster_api;
 use crate::cluster_management;
 use crate::deployment_management;
-use core::config::*;
 use clap::{App, Arg};
+use core::config::*;
 use daemonize::Daemonize;
 // use std::sync::mpsc::{Receiver, Sender};
 use std::sync::mpsc;
