@@ -1,6 +1,7 @@
 use crate::cluster_api;
 use crate::cluster_management;
 use crate::deployment_management;
+use core::config::*;
 use clap::{App, Arg};
 use daemonize::Daemonize;
 // use std::sync::mpsc::{Receiver, Sender};
@@ -48,6 +49,8 @@ pub fn cli() {
         )
         .get_matches();
 
+    let config = core::config::ClusterConfig::get_config_or_default(matches.value_of("config"));
+
     let mut node_hash: HashMap<String, DateTime<Utc>> = HashMap::new();
 
     if matches.is_present("target") {
@@ -70,15 +73,15 @@ pub fn cli() {
             .user("root")
             .group("daemon");
         match daemonize.start() {
-            Ok(_) => run(cluster_nodes),
+            Ok(_) => run(cluster_nodes, config),
             Err(e) => println!("Should log failure to become daemon. error: {}", e),
         };
     } else {
-        run(cluster_nodes);
+        run(cluster_nodes, config);
     }
 }
 
-fn run(targets: Arc<Mutex<HashMap<String, DateTime<Utc>>>>) {
+fn run(targets: Arc<Mutex<HashMap<String, DateTime<Utc>>>>, init_config: ClusterConfig) {
     println!("Starting server");
 
     // cluster consts - need to be CLI args

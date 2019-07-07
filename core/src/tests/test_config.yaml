@@ -1,0 +1,8 @@
+---
+gossipConfig:
+  interval: 6
+  port: 9876
+deploymentConfig:
+  port: 991122
+nodeInfo:
+  nodeName: Bobby

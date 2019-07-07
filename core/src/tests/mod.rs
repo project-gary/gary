@@ -1,8 +1,29 @@
 #[cfg(test)]
 pub mod tests {
 
+    use crate::config::*;
     use crate::data::*;
+    use crate::yaml::*;
+
     use std::collections::HashMap;
+
+    #[test]
+    fn test_merge() {
+        let contents = include_str!("./test_config.yaml");
+        let input: serde_yaml::Value = serde_yaml::from_str(&contents).unwrap();
+        let mut result = serde_yaml::to_value(&ClusterConfig::new_default()).unwrap();
+        merge(&mut result, &input);
+        let mut other_result = ClusterConfig::new_default();
+
+        other_result.gossip_config.interval = 6;
+        other_result.gossip_config.port = 9876;
+        other_result.deployment_config.port = 991122;
+        other_result.node_info.node_name = "Bobby".to_string();
+
+        let a: ClusterConfig = serde_yaml::from_value(result).unwrap();
+        assert_eq!(a, other_result);
+        assert_ne!(a, ClusterConfig::new_default());
+    }
 
     #[test]
     fn read_deployment_test() {
