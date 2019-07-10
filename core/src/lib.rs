@@ -7,5 +7,6 @@ pub mod config;
 pub mod data;
 pub mod defaults;
 pub mod network;
+pub mod runtime;
 pub mod tests;
 pub mod yaml;
