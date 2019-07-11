@@ -2,9 +2,9 @@ pub mod runtime;
 
 use runtime::*;
 
+use libloading::{Library, Symbol};
 use std::env;
 use std::ffi::OsStr;
-use libloading::{Library, Symbol};
 
 pub struct RuntimePluginManager {
     //TODO: could be a Map<Name,Plugin>, might be useful to be able to access them by name
@@ -18,6 +18,15 @@ impl RuntimePluginManager {
             plugins: Vec::new(),
             loaded_libraries: Vec::new(),
         }
+    }
+
+    pub fn get_plugin_name(&self, id: String) -> Result<String, RuntimeError> {
+        for plugin in &self.plugins {
+            if plugin.name() == id {
+                return Ok(plugin.name());
+            }
+        }
+        Err(RuntimeError::new(RuntimeErrorType::Unknown))
     }
 
     pub unsafe fn load_plugin<P: AsRef<OsStr>>(&mut self, filename: P) -> Result<(), ()> {

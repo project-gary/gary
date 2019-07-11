@@ -89,7 +89,7 @@ impl fmt::Display for RuntimeError {
 }
 
 impl RuntimeError {
-    pub fn new(kind: RuntimeErrorType) -> RuntimeError {
+    pub fn new(kind: RuntimeErrorType) -> Self {
         return RuntimeError { error_type: kind };
     }
 }
