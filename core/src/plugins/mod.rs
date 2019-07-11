@@ -1,8 +1,9 @@
 pub mod runtime;
 
 use runtime::*;
-use std::ffi::OsStr;
 
+use std::env;
+use std::ffi::OsStr;
 use libloading::{Library, Symbol};
 
 pub struct RuntimePluginManager {
@@ -22,7 +23,11 @@ impl RuntimePluginManager {
     pub unsafe fn load_plugin<P: AsRef<OsStr>>(&mut self, filename: P) -> Result<(), ()> {
         type PluginCreate = unsafe fn() -> *mut RuntimePlugin;
 
-        let lib = Library::new(filename.as_ref()).unwrap();
+        let mut path = env::current_dir().unwrap();
+        path.push("plugins");
+        path.set_file_name(filename);
+
+        let lib = Library::new(path.into_os_string()).unwrap();
 
         // We need to keep the library around otherwise our plugin's vtable will
         // point to garbage. We do this little dance to make sure the library
@@ -53,7 +58,7 @@ macro_rules! declare_plugin {
             let constructor: fn() -> $plugin_type = $constructor;
 
             let object = constructor();
-            let boxed: Box<$crate::Plugin> = Box::new(object);
+            let boxed: Box<$crate::RuntimePlugin> = Box::new(object);
             Box::into_raw(boxed)
         }
     };
