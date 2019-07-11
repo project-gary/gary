@@ -1,5 +1,5 @@
+use std::any::Any;
 use std::fmt;
-
 /*
  * Experimental
  * consider the use of this at your own risk, eventually this will
@@ -7,27 +7,43 @@ use std::fmt;
  * Use of this api now may mean a lot of work keeping up with it.
 */
 
-pub trait Runtime {
+/// A trait for plugins that run workloads
+pub trait RuntimePlugin: Any + Send + Sync {
     //Required for all plugins
-    fn get_features() -> Vec<RuntimeFeatures>;
-    fn get_version() -> i32;
-    fn get_plugin_name() -> String;
+
+    /// The name of the plugin used to identify it.
+    fn name(&self) -> String;
+    /// A callback fired immediately after the plugin is loaded. Usually used
+    /// for initialization.
+    fn on_plugin_load(&self) {}
+    /// A callback fired immediately before the plugin is unloaded. Use this if
+    /// you need to do any cleanup.
+    fn on_plugin_unload(&self) {}
+    fn get_features(&self) -> Vec<RuntimeFeatures>;
+    fn get_version(&self) -> i32;
 
     //Required for feature WorkloadRunner
     fn create_workload(
+        &self,
         id: String,
         config: &RuntimeConfig,
         options: &Option<SandboxConfig>,
     ) -> Result<String, RuntimeError>;
 
-    fn start_workload(id: String) -> Option<RuntimeError>;
-    fn stop_workload(id: String, timeout: i32) -> Option<RuntimeError>;
-    fn remove_workload(id: String) -> Option<RuntimeError>;
-    fn status_workload(id: String) -> Result<WorkloadStatus, RuntimeError>;
+    fn start_workload(&self, id: String) -> Option<RuntimeError>;
+    fn stop_workload(&self, id: String, timeout: i32) -> Option<RuntimeError>;
+    fn remove_workload(&self, id: String) -> Option<RuntimeError>;
+    fn status_workload(&self, id: String) -> Result<WorkloadStatus, RuntimeError>;
 
     //Required for feature container && vm
-    fn update_workload_resources(id: String, rez: WorkloadResources) -> Option<RuntimeError>;
-    fn exec_sync(id: String, cmd: &[String], timeout: i32) -> (&[u8], &[u8], Option<RuntimeError>);
+    fn update_workload_resources(&self, id: String, rez: WorkloadResources)
+        -> Option<RuntimeError>;
+    fn exec_sync(
+        &self,
+        id: String,
+        cmd: &[String],
+        timeout: i32,
+    ) -> (&[u8], &[u8], Option<RuntimeError>);
 
     //Required for feature vm
 
