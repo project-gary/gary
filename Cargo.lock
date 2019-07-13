@@ -207,6 +207,18 @@ version = "0.1.28"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
+name = "gary"
+version = "0.1.0"
+dependencies = [
+ "chrono 0.4.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "clap 2.33.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "core 0.1.0",
+ "daemonize 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gary-zmq 0.1.0",
+ "log 0.4.7 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "gary-zmq"
 version = "0.1.0"
 dependencies = [

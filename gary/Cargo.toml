@@ -12,16 +12,8 @@ path = "src/main.rs"
 
 [dependencies]
 clap = "2.33.0"
-core = { path = "core"}
-gary-zmq = { path = "gary-zmq" }
+core = { path = "../core"}
+gary-zmq = { path = "../gary-zmq" }
 daemonize = "0.4.1"
 log = "0.4.6"
 chrono = "0.4"
-
-[workspace]
-
-members = [
-    "core",
-    "gary-zmq",
-    "garyctl",
-]
