@@ -6,6 +6,8 @@ use libloading::{Library, Symbol};
 use std::env;
 use std::ffi::OsStr;
 
+use std::fs;
+use std::path::PathBuf;
 pub struct RuntimePluginManager {
     //TODO: could be a Map<Name,Plugin>, might be useful to be able to access them by name
     plugins: Vec<Box<RuntimePlugin>>,
@@ -20,14 +22,25 @@ impl RuntimePluginManager {
         }
     }
 
-    pub unsafe fn load_plugin<P: AsRef<OsStr>>(&mut self, filename: P) -> Result<(), ()> {
+    pub fn load_plugins_in_dir(&mut self, dir: String) -> Result<(), ()> {
+        let path = PathBuf::from(dir);
+        if let Ok(files) = fs::read_dir(path) {
+            for f in files {
+                if let Ok(f) = f {
+                    unsafe {
+                        self.load_plugin(f.path());
+                    }
+                }
+            }
+        }
+
+        Ok(())
+    }
+
+    pub unsafe fn load_plugin(&mut self, file: PathBuf) -> Result<(), ()> {
         type PluginCreate = unsafe fn() -> *mut RuntimePlugin;
 
-        let mut path = env::current_dir().unwrap();
-        path.push("plugins/");
-        path.push(filename.as_ref());
-
-        let lib = Library::new(path.into_os_string()).unwrap();
+        let lib = Library::new(file.into_os_string()).unwrap();
 
         // We need to keep the library around otherwise our plugin's vtable will
         // point to garbage. We do this little dance to make sure the library
