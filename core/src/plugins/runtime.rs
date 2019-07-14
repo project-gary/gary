@@ -2,12 +2,14 @@ use std::any::Any;
 use std::fmt;
 /*
  * Experimental
- * consider the use of this at your own risk, eventually this will
+ * consider the use of this atfilename: Pfilename: P your own risk, eventually this will
  * be versioned and safe to use, currently it may change at whim.
  * Use of this api now may mean a lot of work keeping up with it.
 */
 
 /// A trait for plugins that run workloads
+/// Any unimplemented function should return RuntimeErrors::Unimplemented
+/// as this is used internally to ensure functionality of the plugin.
 pub trait RuntimePlugin: Any + Send + Sync {
     //Required for all plugins
 
@@ -67,6 +69,7 @@ pub struct SandboxConfig {}
 
 #[derive(Debug)]
 pub enum RuntimeErrorType {
+    Unimplemented,
     Timeout,
     Unknown,
 }
