@@ -56,6 +56,7 @@ pub struct WorkloadResources {}
 
 pub struct WorkloadStatus {}
 
+#[derive(Debug, PartialEq)]
 pub enum RuntimeFeatures {
     WorkloadRunner,
     Container,
