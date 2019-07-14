@@ -57,7 +57,7 @@ pub fn cli() {
 
     let plugin_name = runtime_plugin_manager.get_plugin_name("Boby Jones".to_string());
 
-    println!("PLUGIN NAME: {:?}", plugin_name );
+    println!("PLUGIN NAME: {:?}", plugin_name);
 
     let config = core::config::ClusterConfig::get_config_or_default(matches.value_of("config"));
 
