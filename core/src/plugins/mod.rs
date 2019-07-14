@@ -59,7 +59,7 @@ impl RuntimePluginManager {
     }
 
     /// returns ID of created workload
-    fn create_workload_by_name(
+    pub fn create_workload_by_name(
         &self,
         plugin_name: String,
         sandbox_id: String,
@@ -77,7 +77,7 @@ impl RuntimePluginManager {
     /// Required for feature WorkloadRunner
     /// returns (workloadID, pluginName)
     /// TODO: reduce complexity/nesting with map
-    fn create_workload_by_type(
+    pub fn create_workload_by_type(
         &self,
         plugin_type: RuntimeFeatures,
         sandbox_id: String,
@@ -98,8 +98,12 @@ impl RuntimePluginManager {
         Err(RuntimeError::new(RuntimeErrorType::Unknown))
     }
 
-    fn start_workload(&self, workload_id: String, plugin_name: String) -> Option<RuntimeError> {
-        for plugin in &self.plugins {
+    pub fn start_workload(
+        &mut self,
+        workload_id: String,
+        plugin_name: String,
+    ) -> Option<RuntimeError> {
+        for plugin in &mut self.plugins {
             if (plugin.name() == plugin_name) {
                 return plugin.start_workload(workload_id);
             }
@@ -108,7 +112,7 @@ impl RuntimePluginManager {
         return Some(RuntimeError::new(RuntimeErrorType::Unknown));
     }
 
-    fn stop_workload(
+    pub fn stop_workload(
         &self,
         workload_id: String,
         plugin_name: String,
@@ -123,7 +127,11 @@ impl RuntimePluginManager {
         return Some(RuntimeError::new(RuntimeErrorType::Unknown));
     }
 
-    fn remove_workload(&self, workload_id: String, plugin_name: String) -> Option<RuntimeError> {
+    pub fn remove_workload(
+        &self,
+        workload_id: String,
+        plugin_name: String,
+    ) -> Option<RuntimeError> {
         for plugin in &self.plugins {
             if (plugin.name() == plugin_name) {
                 return plugin.remove_workload(workload_id);
@@ -133,8 +141,8 @@ impl RuntimePluginManager {
         return Some(RuntimeError::new(RuntimeErrorType::Unknown));
     }
 
-    fn status_workload(
-        &self,
+    pub fn status_workload(
+        &mut self,
         workload_id: String,
         plugin_name: String,
     ) -> Result<WorkloadStatus, RuntimeError> {
@@ -148,7 +156,7 @@ impl RuntimePluginManager {
     }
 
     //Required for feature container && vm
-    fn update_workload_resources(
+    pub fn update_workload_resources(
         &self,
         id: String,
         rez: WorkloadResources,
@@ -156,7 +164,7 @@ impl RuntimePluginManager {
         return None;
     }
 
-    fn exec_sync(
+    pub fn exec_sync(
         &self,
         id: String,
         cmd: &[String],

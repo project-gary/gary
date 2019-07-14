@@ -32,7 +32,7 @@ pub trait RuntimePlugin: Any + Send + Sync {
         options: &Option<SandboxConfig>,
     ) -> Result<String, RuntimeError>;
 
-    fn start_workload(&self, id: String) -> Option<RuntimeError>;
+    fn start_workload(&mut self, id: String) -> Option<RuntimeError>;
     fn stop_workload(&self, id: String, timeout: i32) -> Option<RuntimeError>;
     fn remove_workload(&self, id: String) -> Option<RuntimeError>;
     fn status_workload(&self, id: String) -> Result<WorkloadStatus, RuntimeError>;
