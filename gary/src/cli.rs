@@ -5,6 +5,7 @@ use clap::{App, Arg};
 use core::config::*;
 use daemonize::Daemonize;
 // use std::sync::mpsc::{Receiver, Sender};
+use std::env;
 use std::sync::mpsc;
 use std::thread;
 
@@ -51,9 +52,10 @@ pub fn cli() {
 
     let mut runtime_plugin_manager = core::plugins::RuntimePluginManager::new();
 
-    unsafe {
-        runtime_plugin_manager.load_plugin("containerd.so");
-    }
+    let mut cur_dir = env::current_dir().unwrap();
+    cur_dir.push("plugins");
+    println!("{}", cur_dir.to_str().unwrap());
+    runtime_plugin_manager.load_plugins_in_dir(String::from(cur_dir.to_str().unwrap()));
 
     runtime_plugin_manager.start_workload("na".to_string(), "docker".to_string());
 
