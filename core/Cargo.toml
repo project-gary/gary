@@ -1,8 +1,10 @@
 [package]
 name = "gary-core"
-version = "0.1.0"
+version = "0.0.1"
 authors = ["Marek Counts <mcounts@suse.com>"]
 edition = "2018"
+description = "core components shared by all things gary"
+license = "MIT"
 
 [dependencies]
 serde = { version = "1.0", features = ["derive"]}
