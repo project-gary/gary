@@ -1,6 +1,7 @@
 use crate::cluster_api;
 use crate::cluster_management;
 use crate::deployment_management;
+use crate::runtime_plugin_manager;
 use clap::{App, Arg};
 use core::config::*;
 use daemonize::Daemonize;
@@ -50,7 +51,10 @@ pub fn cli() {
         )
         .get_matches();
 
-    let mut runtime_plugin_manager = core::plugins::RuntimePluginManager::new();
+    let mut runtime_plugin_manager = runtime_plugin_manager::RuntimePluginManager::new();
+
+    let mut dockerBox = Box::from(gary_docker::ContainerdRuntimePlugin::new());
+    runtime_plugin_manager.load_in_memory_plugin(dockerBox);
 
     let mut cur_dir = env::current_dir().unwrap();
     cur_dir.push("plugins");

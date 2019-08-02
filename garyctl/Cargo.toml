@@ -7,7 +7,7 @@ edition = "2018"
 [dependencies]
 clap = "2.33.0"
 zmq = "0.9"
-core = { path = "../core"}
+core = { path = "../core", package = "gary-core"}
 daemonize = "0.4.1"
 log = "0.4.6"
 tokio = "0.1.21"

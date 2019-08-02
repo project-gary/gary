@@ -3,6 +3,8 @@ name = "gary"
 version = "0.1.0"
 authors = ["Marek Counts <mcounts@suse.com>"]
 edition = "2018"
+build = "build.rs"
+
 
 [[bin]]
 name = "server"
@@ -12,8 +14,13 @@ path = "src/main.rs"
 
 [dependencies]
 clap = "2.33.0"
-core = { path = "../core"}
+core = { path = "../core", package = "gary-core"}
 gary-zmq = { path = "../gary-zmq" }
 daemonize = "0.4.1"
 log = "0.4.6"
 chrono = "0.4"
+libloading = "0.5.2"
+
+
+#default plugins
+gary_docker = { path = "../plugins/gary-plugin-docker", version ="0.0.2", package = "gary-plugin-docker"}
