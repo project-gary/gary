@@ -53,8 +53,8 @@ pub fn cli() {
 
     let mut runtime_plugin_manager = runtime_plugin_manager::RuntimePluginManager::new();
 
-    //let mut dockerBox = Box::from_raw(ContainerdRuntimePlugin::new());
-    //runtime_plugin_manager.load_in_memory_plugin(dockerBox);
+    let mut dockerBox = Box::from(gary_docker::ContainerdRuntimePlugin::new());
+    runtime_plugin_manager.load_in_memory_plugin(dockerBox);
 
     let mut cur_dir = env::current_dir().unwrap();
     cur_dir.push("plugins");
