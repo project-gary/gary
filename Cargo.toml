@@ -5,4 +5,5 @@ members = [
     "garyctl",
     "gary",
     "plugins/gary-plugin-docker",
+    "plugins/gary-scheduler",
 ]
