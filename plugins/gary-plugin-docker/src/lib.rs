@@ -106,6 +106,8 @@ impl RuntimePlugin for ContainerdRuntimePlugin {
                         stat.name, stat.memory_stats.max_usage, stat.memory_stats.usage
                     );
                     WorkloadStatus {
+                        current_memory: stat.memory_stats.usage.unwrap(),
+                        max_memory: stat.memory_stats.max_usage.unwrap(),
                         workload_status: CurrentWorkloadStatus::Running,
                     }
                 })
@@ -114,9 +116,7 @@ impl RuntimePlugin for ContainerdRuntimePlugin {
 
         if let Ok(res) = res {
             if res.len() > 0 {
-                return Ok(WorkloadStatus {
-                    workload_status: CurrentWorkloadStatus::Running,
-                });
+                return Ok(res[0].clone());
             }
         }
 

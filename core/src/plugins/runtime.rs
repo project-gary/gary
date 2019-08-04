@@ -54,12 +54,15 @@ pub trait RuntimePlugin: Any + Send + Sync {
 
 pub struct WorkloadResources {}
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct WorkloadStatus {
+    pub current_memory: u64,
+    pub max_memory: u64,
+
     pub workload_status: CurrentWorkloadStatus,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum CurrentWorkloadStatus {
     Running,
     Stopped,
