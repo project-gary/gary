@@ -5,6 +5,7 @@ extern crate futures;
 
 use bollard::container::{
     Config, CreateContainerOptions, HostConfig, LogOutput, LogsOptions, StartContainerOptions,
+    StatsOptions,
 };
 use bollard::Docker;
 use core::plugins::runtime::*;
@@ -85,11 +86,40 @@ impl RuntimePlugin for ContainerdRuntimePlugin {
         return None;
     }
 
-    fn remove_workload(&self, id: String) -> Option<RuntimeError> {
+    fn remove_workload(&mut self, id: String) -> Option<RuntimeError> {
         return None;
     }
 
-    fn status_workload(&self, id: String) -> Result<WorkloadStatus, RuntimeError> {
+    fn status_workload(&mut self, id: String) -> Result<WorkloadStatus, RuntimeError> {
+        let res = self.runner.block_on(
+            self.docker
+                .stats(
+                    &id,
+                    Some(StatsOptions {
+                        stream: true,
+                        ..Default::default()
+                    }),
+                )
+                .map(|stat| {
+                    println!(
+                        "{} - mem total: {:?} | mem usage: {:?}",
+                        stat.name, stat.memory_stats.max_usage, stat.memory_stats.usage
+                    );
+                    WorkloadStatus {
+                        current_memory: stat.memory_stats.usage.unwrap(),
+                        max_memory: stat.memory_stats.max_usage.unwrap(),
+                        workload_status: CurrentWorkloadStatus::Running,
+                    }
+                })
+                .collect(),
+        );
+
+        if let Ok(res) = res {
+            if res.len() > 0 {
+                return Ok(res[0].clone());
+            }
+        }
+
         return Err(RuntimeError::new(RuntimeErrorType::Unknown));
     }
 

@@ -143,11 +143,11 @@ impl RuntimePluginManager {
     }
 
     pub fn remove_workload(
-        &self,
+        &mut self,
         workload_id: String,
         plugin_name: String,
     ) -> Option<RuntimeError> {
-        for plugin in &self.plugins {
+        for plugin in &mut self.plugins {
             if (plugin.name() == plugin_name) {
                 return plugin.remove_workload(workload_id);
             }
@@ -161,7 +161,7 @@ impl RuntimePluginManager {
         workload_id: String,
         plugin_name: String,
     ) -> Result<WorkloadStatus, RuntimeError> {
-        for plugin in &self.plugins {
+        for plugin in &mut self.plugins {
             if (plugin.name() == plugin_name) {
                 return plugin.status_workload(workload_id);
             }
