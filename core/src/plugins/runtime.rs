@@ -2,7 +2,7 @@ use std::any::Any;
 use std::fmt;
 /*
  * Experimental
- * consider the use of this atfilename: Pfilename: P your own risk, eventually this will
+ * consider the use of this file a your own risk, eventually this will
  * be versioned and safe to use, currently it may change at whim.
  * Use of this api now may mean a lot of work keeping up with it.
 */

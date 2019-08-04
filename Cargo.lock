@@ -378,6 +378,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "gary-scheduler"
+version = "0.1.0"
+
+[[package]]
 name = "gary-zmq"
 version = "0.1.0"
 dependencies = [
