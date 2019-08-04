@@ -34,8 +34,8 @@ pub trait RuntimePlugin: Any + Send + Sync {
 
     fn start_workload(&mut self, id: String) -> Option<RuntimeError>;
     fn stop_workload(&self, id: String, timeout: i32) -> Option<RuntimeError>;
-    fn remove_workload(&self, id: String) -> Option<RuntimeError>;
-    fn status_workload(&self, id: String) -> Result<WorkloadStatus, RuntimeError>;
+    fn remove_workload(&mut self, id: String) -> Option<RuntimeError>;
+    fn status_workload(&mut self, id: String) -> Result<WorkloadStatus, RuntimeError>;
 
     //Required for feature container && vm
     fn update_workload_resources(&self, id: String, rez: WorkloadResources)
@@ -54,7 +54,17 @@ pub trait RuntimePlugin: Any + Send + Sync {
 
 pub struct WorkloadResources {}
 
-pub struct WorkloadStatus {}
+#[derive(Debug, PartialEq)]
+pub struct WorkloadStatus {
+    pub workload_status: CurrentWorkloadStatus,
+}
+
+#[derive(Debug, PartialEq)]
+pub enum CurrentWorkloadStatus {
+    Running,
+    Stopped,
+    Failed,
+}
 
 #[derive(Debug, PartialEq)]
 pub enum RuntimeFeatures {
