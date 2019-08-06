@@ -25,11 +25,11 @@ Code Name Gary
 ## Building and testing
 Building and local unit testing are made simple by cargo
 #### Building
-    `cargo build`
+`cargo build`
 use the `--release` flag for a more optimized build. it will take longer to compile.
 
 #### Testing
-    `cargo check && cargo fmt -- --check && cargo clippy`
+`cargo check && cargo fmt -- --check && cargo clippy`
 
 It could be required for you to use `rustup component add clippy && rustup component add fmt` to use those commands.
 
