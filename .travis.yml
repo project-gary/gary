@@ -31,7 +31,7 @@ matrix:
             cargo check --verbose --all &&
             cargo test  --verbose --all &&
             cargo fmt   --verbose --all -- --check --verbose &&
-            bash <(curl -s https://codecov.io/bash) -s target/kcov-master
+            bash <(curl -s https://codecov.io/bash) -s target/kcov-master/build/src/kcov
       sudo: required
 before_script:
   - "rustup component add rustfmt"
