@@ -9,11 +9,6 @@ matrix:
         include:
                 - rust: stable
                         env: NAME='linting'
-                        before_script:
-                        script:
-                                - cargo fmt --all -- --check
-                                - cargo clippy
-                                - env: NAME='cargo-travis'
                         sudo: required # travis-ci/travis-ci#9061
                         before_script:
                                 - cargo install cargo-update || echo "cargo-update already installed"
@@ -25,7 +20,7 @@ matrix:
                                 cargo coverage --verbose &&        
                                 cargo check --verbose --all &&
                                 cargo test  --verbose --all &&
-                                cargo fmt   --verbose --all -- --check --verbose
+                                cargo fmt   --verbose --all -- --check --verbose &&
                                 bash <(curl -s https://codecov.io/bash) -s target/kcov
                         addons: # required for kcov
                                 apt:
