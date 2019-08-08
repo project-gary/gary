@@ -24,12 +24,12 @@ matrix:
                                 bash <(curl -s https://codecov.io/bash) -s target/kcov
                         addons: # required for kcov
                                 apt:
-                                packages:
-                                        - libcurl4-openssl-dev
-                                        - libelf-dev
-                                        - libdw-dev
-                                        - binutils-dev
-                                        - cmake
+                                        packages:
+                                                - libcurl4-openssl-dev
+                                                - libelf-dev
+                                                - libdw-dev
+                                                - binutils-dev
+                                                - cmake
 before_script:
         - rustup component add rustfmt
 script:
