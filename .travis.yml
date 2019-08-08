@@ -16,12 +16,12 @@ matrix:
                                 - cargo install-update -a
                         script:
                                 - |
-                                cargo build --verbose --all &&
-                                cargo coverage --verbose &&        
-                                cargo check --verbose --all &&
-                                cargo test  --verbose --all &&
-                                cargo fmt   --verbose --all -- --check --verbose &&
-                                bash <(curl -s https://codecov.io/bash) -s target/kcov
+                                        cargo build --verbose --all &&
+                                        cargo coverage --verbose &&        
+                                        cargo check --verbose --all &&
+                                        cargo test  --verbose --all &&
+                                        cargo fmt   --verbose --all -- --check --verbose &&
+                                        bash <(curl -s https://codecov.io/bash) -s target/kcov
                         addons: # required for kcov
                                 apt:
                                         packages:
