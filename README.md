@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/project-gary/gary.svg?branch=master)](https://travis-ci.org/project-gary/gary)
+[![Coverage Status](https://coveralls.io/repos/github/project-gary/gary/badge.svg?branch=master)](https://coveralls.io/github/project-gary/gary?branch=master)
 
 # code-name-gary
 Code Name Gary
