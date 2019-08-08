@@ -1,4 +1,5 @@
 language: rust
+cache: cargo
 rust:
   - stable
   - nightly
@@ -30,7 +31,7 @@ matrix:
             cargo check --verbose --all &&
             cargo test  --verbose --all &&
             cargo fmt   --verbose --all -- --check --verbose &&
-            bash <(curl -s https://codecov.io/bash) -s target/kcov
+            bash <(curl -s https://codecov.io/bash) -s target/kcov-master
       sudo: required
 before_script:
   - "rustup component add rustfmt"
