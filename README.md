@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/project-gary/gary.svg?branch=master)](https://travis-ci.org/project-gary/gary)
-[![codecov](https://codecov.io/gh/project-gary/gary/branch/master/graph/badge.svg)](https://codecov.io/gh/project-gary/gary)
+[![Test Coverage](https://codecov.io/gh/project-gary/gary/branch/master/graph/badge.svg)](https://codecov.io/gh/project-gary/gary)
 
 # code-name-gary
 Code Name Gary
