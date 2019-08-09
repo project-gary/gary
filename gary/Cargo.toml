@@ -14,7 +14,7 @@ path = "src/main.rs"
 
 [dependencies]
 clap = "2.33.0"
-core = { path = "../core", package = "gary-core"}
+common = { path = "../common", package = "gary-common"}
 gary-zmq = { path = "../gary-zmq" }
 daemonize = "0.4.1"
 log = "0.4.6"

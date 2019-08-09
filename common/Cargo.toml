@@ -1,9 +1,9 @@
 [package]
-name = "gary-core"
+name = "gary-common"
 version = "0.0.1"
 authors = ["Marek Counts <mcounts@suse.com>"]
 edition = "2018"
-description = "core components shared by all things gary"
+description = "common components shared by all things gary"
 license = "MIT"
 
 [dependencies]

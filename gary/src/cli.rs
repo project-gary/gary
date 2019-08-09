@@ -3,7 +3,7 @@ use crate::cluster_management;
 use crate::deployment_management;
 use crate::runtime_plugin_manager;
 use clap::{App, Arg};
-use core::config::*;
+use common::config::*;
 use daemonize::Daemonize;
 // use std::sync::mpsc::{Receiver, Sender};
 use std::env;
@@ -63,7 +63,7 @@ pub fn cli() {
 
     runtime_plugin_manager.start_workload("na".to_string(), "docker".to_string());
 
-    let config = core::config::ClusterConfig::get_config_or_default(matches.value_of("config"));
+    let config = common::config::ClusterConfig::get_config_or_default(matches.value_of("config"));
 
     let mut node_hash: HashMap<String, DateTime<Utc>> = HashMap::new();
 
