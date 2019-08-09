@@ -1,41 +1,54 @@
 language: rust
+cache: cargo
 rust:
-        - stable
-        - nightly
+  - stable
+  - nightly
 matrix:
-        allow_failures:
-                - rust: nightly
-        fast_finish: true
-        include:
-            - rust: stable
-              env: NAME='linting'
-              before_script:
-              script:
-                - cargo fmt --all -- --check
-                - cargo clippy
-                    - env: NAME='cargo-travis'
-              sudo: required # travis-ci/travis-ci#9061
-              before_script:
-                - cargo install cargo-update || echo "cargo-update already installed"
-                - cargo install cargo-travis || echo "cargo-travis already installed"
-                - cargo install-update -a
-              script:
-                - |
-                  cargo build --verbose &&
-                  cargo coverage --verbose &&
-                  bash <(curl -s https://codecov.io/bash) -s target/kcov
-              addons: # required for kcov
-                apt:
-                  packages:
-                    - libcurl4-openssl-dev
-                    - libelf-dev
-                    - libdw-dev
-                    - binutils-dev
-                    - cmake
+  allow_failures:
+    -
+      rust: nightly
+  fast_finish: true
+  include:
+    - rust: stable
+    - env: NAME='linting'
+      addons:
+          apt:
+            packages:
+              - libcurl4-openssl-dev
+              - libelf-dev
+              - libdw-dev
+              - binutils-dev
+              - cmake
+      before_script:
+        - export PATH=$HOME/.cargo/bin:$PATH
+        - "rustup component add rustfmt"
+        - "cargo install cargo-update || echo \"cargo-update already installed\""
+        - "cargo install cargo-travis || echo \"cargo-travis already installed\""
+        - "cargo install-update -a"
+      script:
+        - "cargo build --verbose --all"
+        - "cargo check --verbose --all"
+        - "cargo test  --verbose --all"
+        - "cargo fmt   --verbose --all -- --check --verbose"
+      sudo: required
+      after_success: |
+        wget https://github.com/SimonKagstrom/kcov/archive/master.tar.gz &&
+        tar xzf master.tar.gz &&
+        cd kcov-master &&
+        mkdir build &&
+        cd build &&
+        cmake .. &&
+        make &&
+        make install DESTDIR=../../kcov-build &&
+        cd ../.. &&
+        rm -rf kcov-master &&
+        for file in target/debug/examplerust-*; do [ -x "${file}" ] || continue; mkdir -p "target/cov/$(basename $file)"; ./kcov-build/usr/local/bin/kcov --exclude-pattern=/.cargo,/usr/lib --verify "target/cov/$(basename $file)" "$file"; done &&
+        bash <(curl -s https://codecov.io/bash) &&
+        echo "Uploaded code coverage"
 before_script:
-        - rustup component add rustfmt
+  - "rustup component add rustfmt"
 script:
-        - cargo build --verbose --all
-        - cargo check --verbose --all
-        - cargo test  --verbose --all
-        - cargo fmt   --verbose --all -- --check --verbose
+  - "cargo build --verbose --all"
+  - "cargo check --verbose --all"
+  - "cargo test --verbose --all"
+  - "cargo fmt --verbose --all -- --check --verbose"
