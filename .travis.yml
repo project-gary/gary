@@ -36,5 +36,5 @@ before_script:
 script:
   - "cargo build --verbose --all"
   - "cargo check --verbose --all"
-  - "cargo test  --verbose --all"
-  - "cargo fmt   --verbose --all -- --check --verbose"
+  - "cargo test --verbose --all"
+  - "cargo fmt --verbose --all -- --check --verbose"
