@@ -1,4 +1,4 @@
-use core::plugins::runtime::*;
+use common::plugins::runtime::*;
 
 use libloading::{Library, Symbol};
 use std::env;

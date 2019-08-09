@@ -10,7 +10,7 @@ license = "MIT"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-core = { path = "../../core" , version = "0.0.1", package = "gary-core"}
+common = { path = "../../common" , version = "0.0.1", package = "gary-common"}
 bollard = "0.3"
 tokio = "0.1"
 futures = "0.1"

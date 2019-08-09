@@ -11,7 +11,7 @@ Currently there are no prebuilt binaries. Once we reach pre-alpha these will be 
 
 `cargo build` can also be used to build the `garyctl` client if you would like to use that to interact with your running cluster.
 
-Once you have a `gary` binary copy this to the machines you want to be in your cluster, the [default ports](../core/defaults.rs) will be used if others are not specified in your `~/.gary/config` file. 
+Once you have a `gary` binary copy this to the machines you want to be in your cluster, the [default ports](../common/defaults.rs) will be used if others are not specified in your `~/.gary/config` file. 
 
 To start you gary client you can just run the binary in your favorite shell, if you would like to run it as a daemon run it with `-d`
 

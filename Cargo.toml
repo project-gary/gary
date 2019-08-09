@@ -1,6 +1,6 @@
 [workspace]
 members = [
-    "core",
+    "common",
     "gary-zmq",
     "garyctl",
     "gary",

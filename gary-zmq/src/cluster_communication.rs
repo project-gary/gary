@@ -1,5 +1,5 @@
-use core::comm::ClusterCommunicator;
-use core::network::{Message, MessageType};
+use common::comm::ClusterCommunicator;
+use common::network::{Message, MessageType};
 use std::sync::mpsc::Sender;
 
 use std::collections::HashMap;

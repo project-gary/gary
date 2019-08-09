@@ -1,5 +1,5 @@
 #[macro_use]
-extern crate core;
+extern crate common;
 extern crate bollard;
 extern crate futures;
 
@@ -8,7 +8,7 @@ use bollard::container::{
     StatsOptions,
 };
 use bollard::Docker;
-use core::plugins::runtime::*;
+use common::plugins::runtime::*;
 use futures::Future;
 use tokio::prelude::*;
 use tokio::runtime::*;

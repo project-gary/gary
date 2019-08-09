@@ -1,8 +1,8 @@
 extern crate clap;
-extern crate core;
+extern crate common;
 use clap::{App, Arg, ArgMatches, SubCommand};
-use core::cluster_api::*;
-use core::defaults::*;
+use common::cluster_api::*;
+use common::defaults::*;
 
 fn main() {
     let matches = App::new("Gary")
