@@ -9,6 +9,7 @@ use daemonize::Daemonize;
 use std::env;
 use std::sync::mpsc;
 use std::thread;
+use std::path::Path;
 
 use chrono::{DateTime, Utc};
 use std::collections::HashMap;
@@ -53,15 +54,17 @@ pub fn cli() {
 
     let mut runtime_plugin_manager = runtime_plugin_manager::RuntimePluginManager::new();
 
-    let mut dockerBox = Box::from(gary_docker::ContainerdRuntimePlugin::new());
-    runtime_plugin_manager.load_in_memory_plugin(dockerBox);
+    let docker_box = Box::from(gary_docker::ContainerdRuntimePlugin::new());
+    runtime_plugin_manager.load_in_memory_plugin(docker_box);
 
-    let mut cur_dir = env::current_dir().unwrap();
-    cur_dir.push("plugins");
-    println!("{}", cur_dir.to_str().unwrap());
-    runtime_plugin_manager.load_plugins_in_dir(String::from(cur_dir.to_str().unwrap()));
-
-    runtime_plugin_manager.start_workload("na".to_string(), "docker".to_string());
+    let cur_dir = env::current_dir();
+    if let Ok(mut cur_dir) = cur_dir {
+        cur_dir.push("plugins/runtime/");
+        if Path::new(cur_dir.to_str().unwrap()).exists() {
+            println!("{}", cur_dir.to_str().unwrap());
+            let _ = runtime_plugin_manager.load_plugins_in_dir(String::from(cur_dir.to_str().unwrap()));
+        }
+    }
 
     let config = common::config::ClusterConfig::get_config_or_default(matches.value_of("config"));
 
