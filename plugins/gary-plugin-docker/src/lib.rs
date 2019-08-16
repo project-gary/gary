@@ -5,7 +5,7 @@ extern crate futures;
 
 use bollard::container::{
     Config, CreateContainerOptions, HostConfig, LogOutput, LogsOptions, StartContainerOptions,
-    StatsOptions,
+    StatsOptions, StopContainerOptions,
 };
 use bollard::Docker;
 use common::plugins::runtime::*;
@@ -82,8 +82,15 @@ impl RuntimePlugin for ContainerdRuntimePlugin {
         return Some(RuntimeError::new(RuntimeErrorType::Unknown));
     }
 
-    fn stop_workload(&self, id: String, timeout: i32) -> Option<RuntimeError> {
-        return None;
+    fn stop_workload(&mut self, id: String, timeout: i64) -> Option<RuntimeError> {
+        let options = Some(StopContainerOptions { t: timeout });
+        let results = self
+            .runner
+            .block_on(self.docker.stop_container("nginx", options));
+        match results {
+            Ok(_) => return None,
+            Err(_) => return Some(RuntimeError::new(RuntimeErrorType::Unknown)),
+        }
     }
 
     fn remove_workload(&mut self, id: String) -> Option<RuntimeError> {
