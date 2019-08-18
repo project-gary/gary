@@ -7,9 +7,9 @@ use common::config::*;
 use daemonize::Daemonize;
 // use std::sync::mpsc::{Receiver, Sender};
 use std::env;
+use std::path::Path;
 use std::sync::mpsc;
 use std::thread;
-use std::path::Path;
 
 use chrono::{DateTime, Utc};
 use std::collections::HashMap;
@@ -62,7 +62,8 @@ pub fn cli() {
         cur_dir.push("plugins/runtime/");
         if Path::new(cur_dir.to_str().unwrap()).exists() {
             println!("{}", cur_dir.to_str().unwrap());
-            let _ = runtime_plugin_manager.load_plugins_in_dir(String::from(cur_dir.to_str().unwrap()));
+            let _ =
+                runtime_plugin_manager.load_plugins_in_dir(String::from(cur_dir.to_str().unwrap()));
         }
     }
 
