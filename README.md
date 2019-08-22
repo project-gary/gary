@@ -5,12 +5,11 @@
 Code Name Gary
 
 ## Goals
- * Create a container orchestrator
- * control-plane vs worker node == no difference for install/user.
- * single binary install
- * based on promise theory
- * HA on as few as 3 nodes and scale to millions of nodes 
-
+ * Container orchestrator, expandable to other runtimes (VMs, functions, processes, etc)
+ * Control-plane vs worker node == no difference for install/user.
+ * Single binary install
+ * Based on promise theory
+ * HA on as few as 3 nodes and scale to millions of nodes
 
 ## Non-goals
  * Service mesh
@@ -24,17 +23,18 @@ Code Name Gary
  - [ ] Machine taints
 
 ## Building and testing
-Building and local unit testing are made simple by cargo
+Building and local unit testing are made simple by cargo.
+
 #### Building
 `cargo build`
-use the `--release` flag for a more optimized build. it will take longer to compile.
+use the `--release` flag for a more optimized build. It will take longer to compile.
 
 #### Testing
 `cargo check && cargo fmt -- --check && cargo clippy`
 
 It could be required for you to use `rustup component add clippy && rustup component add fmt` to use those commands.
 
-currently there are a few failures in check and clippy, in the future both of these will be required 
+Currently there are a few failures in check and clippy; in the future both of these will be required 
 to pass to all of these to be merged.
 
 ## Tech Stack Overview
@@ -45,10 +45,10 @@ to pass to all of these to be merged.
 
 ## Architecture
 
-Based off promise Theory. designed to be control-plane-less. All nodes created equal. [info](docs/architecture.md)
+Based on Promise Theory. designed to be control-plane-less. All nodes created equal. [info](docs/architecture.md)
 
 ## Community
 Play nice with others please. [info](docs/community.md)
 
 ## Deployment Guide
-[Here](docs/user_guide.md) is a best effort deployment guide
+[Here](docs/user_guide.md) is a best effort deployment guide.
