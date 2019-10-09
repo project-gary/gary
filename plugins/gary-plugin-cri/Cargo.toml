@@ -1,0 +1,11 @@
+[package]
+name = "gary-plugin-cri"
+version = "0.1.0"
+authors = ["Marek Counts <mcounts@suse.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+grpcio = "0.4.4"
+protoc-grpcio = "1.0.2"
