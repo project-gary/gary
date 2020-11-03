@@ -1,0 +1,35 @@
+[package]
+name = "gary-plugin-cri"
+version = "0.0.1"
+authors = ["Marek Counts <mcounts@suse.com>"]
+edition = "2018"
+description = "simple cri plugin for gary"
+license = "MIT"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+common = { path = "../../common" , version = "0.0.1", package = "gary-common"}
+anyhow = "1.0.32"
+clap = { git = "https://github.com/clap-rs/clap", features = ["wrap_help"] }
+derive_builder = { git = "https://github.com/colin-kiegel/rust-derive-builder" }
+env_logger = "0.7.1"
+futures-util = "0.3.5"
+getset = "0.1.1"
+log = { version = "0.4.11", features = ["serde", "std"] }
+prost = "0.6.1"
+serde = { version = "1.0.116", features = ["derive"] }
+serde_json = "1.0.57"
+tokio = { version = "0.2.22", features = ["fs", "macros", "stream", "uds"] }
+tonic = "0.3.1"
+
+[build-dependencies]
+anyhow = "1.0.32"
+tonic-build = "0.3.1"
+
+[dev-dependencies]
+ctor = "0.1.15"
+tempfile = "3.1.0"
+tokio-test = "0.2.1"
+tower = "0.3.1"

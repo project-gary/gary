@@ -4,6 +4,6 @@ members = [
     "gary-zmq",
     "garyctl",
     "gary",
-    "plugins/gary-plugin-docker",
     "plugins/gary-scheduler",
+    "plugins/gary-plugin-cri",
 ]
