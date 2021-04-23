@@ -695,6 +695,7 @@ dependencies = [
  "ctor",
  "derive_builder",
  "env_logger 0.7.1",
+ "futures",
  "futures-util",
  "gary-common",
  "getset",
