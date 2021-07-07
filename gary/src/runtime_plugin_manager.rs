@@ -128,12 +128,12 @@ impl RuntimePluginManager {
     }
 
     pub fn stop_workload(
-        &self,
+        &mut self,
         workload_id: String,
         plugin_name: String,
-        timeout: i32,
+        timeout: i64,
     ) -> Option<RuntimeError> {
-        for plugin in &self.plugins {
+        for plugin in &mut self.plugins {
             if (plugin.name() == plugin_name) {
                 return plugin.stop_workload(workload_id, timeout);
             }

@@ -33,7 +33,7 @@ pub trait RuntimePlugin: Any + Send + Sync {
     ) -> Result<String, RuntimeError>;
 
     fn start_workload(&mut self, id: String) -> Option<RuntimeError>;
-    fn stop_workload(&self, id: String, timeout: i32) -> Option<RuntimeError>;
+    fn stop_workload(&mut self, id: String, timeout: i64) -> Option<RuntimeError>;
     fn remove_workload(&mut self, id: String) -> Option<RuntimeError>;
     fn status_workload(&mut self, id: String) -> Result<WorkloadStatus, RuntimeError>;
 
