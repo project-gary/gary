@@ -24,11 +24,17 @@ Code Name Gary
 ## Building and testing
 Building and local unit testing are made simple by cargo.
 
-#### Building
+### Building
+
+#### requirements
+Requires both cmake and protocal buffers installed. Want to help out with this project? add more instructions here :)
+
+#### building
+
 `cargo build`
 use the `--release` flag for a more optimized build. It will take longer to compile.
 
-#### Testing
+### Testing
 `cargo check && cargo fmt -- --check && cargo clippy`
 
 It could be required for you to use `rustup component add clippy && rustup component add fmt` to use those commands.
