@@ -1,4 +1,4 @@
-[![Actions Status](https://github.com/project-gary/gary/workflows/Rust/badge.svg)](https://github.com/project-gary/actions)
+[![Actions Status](https://github.com/project-gary/gary/workflows/unit-tests/badge.svg)](https://github.com/project-gary/actions)
 
 # code-name-gary
 Code Name Gary
