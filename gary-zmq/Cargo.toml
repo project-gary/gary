@@ -5,7 +5,7 @@ authors = ["Marek Counts <mcounts@suse.com>"]
 edition = "2018"
 
 [dependencies]
-zmq = "0.9"
+zmq = "0.9.2"
 common = { path = "../common", package = "gary-common"}
 daemonize = "0.4.1"
 log = "0.4.6"

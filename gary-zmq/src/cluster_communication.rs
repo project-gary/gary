@@ -25,7 +25,7 @@ pub struct ZmqNode {
 
 impl ClusterCommunicator for ZmqNode {
     fn send_message(&self, target: &str, msg: &Message) -> bool {
-        const TIMEOUTPERIOD: i32 = 1000; // timeout in milliseconds
+        const TIMEOUTPERIOD: i32 = 5000; // timeout in milliseconds
 
         let serialized_msg = serde_cbor::to_vec(msg).unwrap();
         let requester = self.node_comm_ctx.socket(zmq::REQ).unwrap();
